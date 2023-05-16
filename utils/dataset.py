@@ -31,7 +31,7 @@ path : dataset/
 # image padding to prevent distortion of image
 class Padding(object):
 
-    def __init__(self, fill: Tuple[int, int, int] = (0, 0, 0)):
+    def __init__(self, fill):
         self.fill = fill
 
     def __call__(self, src):
@@ -51,15 +51,21 @@ class Padding(object):
 
 def load_dataloader(
     path: str,
+    img_size: int = 224,
+    fill_color: Tuple[int, int, int]=(0, 0, 0),
     subset: str = 'train',
     num_workers: int=8,
     batch_size: int=32,
     shuffle: bool=True,
-    drop_last: bool = True,):
-    data_path = path + subset
+    drop_last: bool = True,
+):
+    assert subset in ('train', 'valid', 'test')
+
+    data_path = path + '/' + subset
 
     augmentation = transforms.Compose([
-        transforms.Resize((224, 224)),
+        Padding(fill=fill_color),
+        transforms.Resize((img_size, img_size)),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomRotation(degrees=(-20, 20)),
         transforms.ToTensor(),
