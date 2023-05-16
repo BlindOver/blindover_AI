@@ -3,17 +3,22 @@ import torch
 
 
 class CheckPoint(object):
-    def __init__(self, verbose=False, trace_func=print):
+    def __init__(self, verbose=False, trace_func=print, save_best=False):
         self.verbose = verbose
         self.trace_func = trace_func
         self.val_loss_min = np.inf
         self.best_score = None
 
-    def __call__(self, val_loss, model, path):
+    def __call__(self, val_loss, model, path, save_best=False):
         score = -val_loss
+        if save_best:
+            if score > self.best_score:
+                torch.save(model.state_dict(), path)
+
         if self.best_score is None:
             self.best_score = score
             self.save_checkpoint(val_loss, model, path)
+
         elif score > self.best_score:
             self.best_score = score
             self.save_checkpoint(val_loss, model, path)
@@ -50,11 +55,13 @@ class EarlyStopping(object):
         if self.best_score is None:
             self.best_score = score
             self.save_model(val_loss, model)
+
         elif score < self.best_score + self.delta:
             self.counter += 1
             self.trace_func(f'\nEarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
                 self.early_stop = True
+                
         else:
             self.best_score = score
             self.save_model(val_loss, model)
