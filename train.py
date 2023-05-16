@@ -197,8 +197,10 @@ def training(
             lr_scheduler.step()
 
         if check_point:
-            path = f'./runs/{project_name}/weights/check_point_{epoch+1}.pt'
+            path = './runs/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
+            best_path = f'./runs/{project_name}/weights/best.pt'
             cp(valid_loss, model, path)
+            cp(valid_loss, model, best_path, save_best=True)
 
         if early_stop:
             es(valid_loss, model)
@@ -227,7 +229,7 @@ def get_args_parser():
                         help='create a new folder')
     parser.add_argument('--model', type=str, required=True,
                         help='model name consisting of mobilenet, shufflenet, mnasnet and efficientnet')
-    parser.add_argument('--pretrained', type=bool, default=True,
+    parser.add_argument('--pretrained', action='store_true',
                         help='load pretrained model')
     parser.add_argument('--img_size', type=int, default=224,
                         help='image resize size before applying cropping')
@@ -247,11 +249,11 @@ def get_args_parser():
                         help='set optimizer (sgd momentum and adam)')
     parser.add_argument('--num_classes', default=100, type=int,
                         help='class number of dataset')
-    parser.add_argument('--lr_scheduling', default=True, type=bool,
+    parser.add_argument('--lr_scheduling', action='store_true'
                         help='apply learning rate scheduler')
-    parser.add_argument('--check_point', default=False, type=bool,
+    parser.add_argument('--check_point', action='store_true'
                         help='save weight file when achieve the best score in validation phase')
-    parser.add_argument('--early_stop', default=True, type=bool,
+    parser.add_argument('--early_stop', action='store_true'
                         help='set early stopping if loss of valid is increased')
     parser.add_argument('--es_patience', default=20, type=int,
                         help='patience to stop training by early stopping')
