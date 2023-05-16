@@ -59,7 +59,7 @@ def train_on_batch(
 
     return batch_loss/(batch+1), batch_acc/(batch+1)
     
-
+@torch.no_grad()
 def valid_on_batch(
     model,
     valid_loader,
@@ -157,7 +157,7 @@ def training(
     for epoch in pbar:
         epoch_time = time.time()
 
-        ##################### model training #####################
+        ##################### training #####################
         train_loss, train_acc = train_on_batch(
             model=model,
             train_loader=train_loader,
@@ -166,8 +166,9 @@ def training(
             loss_func=loss_func,
             log_step=train_log_step,
         )
+        ####################################################
 
-        #################### model validating ####################
+        #################### validating ####################
         valid_loss, valid_acc = valid_on_batch(
             model=model,
             valid_loader=valid_loader,
@@ -175,6 +176,7 @@ def training(
             device=device,
             log_step=valid_log_step,
         )
+        ####################################################
 
         logger(f'\n{"="*30} Epoch {epoch+1}/{epochs} {"="*30}'
                f'\ntime: {time.time() - init_time:.2f}s'
@@ -223,7 +225,7 @@ def get_args_parser():
                         help='data directory for training')
     parser.add_argument('--name', type=str, default='experiment1',
                         help='create a new folder')
-    parser.add_argument('--model', type=bool, default=True,
+    parser.add_argument('--model', type=str, required=True,
                         help='model name consisting of mobilenet, shufflenet, mnasnet and efficientnet')
     parser.add_argument('--pretrained', type=bool, default=True,
                         help='load pretrained model')
@@ -237,13 +239,13 @@ def get_args_parser():
                         help='learning rate')
     parser.add_argument('--weight_decay', default=5e-4, type=float,
                         help='weight decay of optimizer SGD and Adam')
-    parser.add_argument('--epochs', default=90, type=int,
+    parser.add_argument('--epochs', default=100, type=int,
                         help='Epochs for training model')
     parser.add_argument('--momentum', default=0.9, type=float,
                         help='momentum constant for SGD momentum and Adam (beta1)')
-    parser.add_argument('--optimizer', default=0.9, type=str,
+    parser.add_argument('--optimizer', default='momentum', type=str,
                         help='set optimizer (sgd momentum and adam)')
-    parser.add_argument('--num_classes', type=int, default=100,
+    parser.add_argument('--num_classes', default=100, type=int,
                         help='class number of dataset')
     parser.add_argument('--lr_scheduling', default=True, type=bool,
                         help='apply learning rate scheduler')
