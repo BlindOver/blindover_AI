@@ -227,8 +227,9 @@ def get_args_parser():
                         help='data directory for training')
     parser.add_argument('--name', type=str, default='experiment1',
                         help='create a new folder')
-    parser.add_argument('--model', type=str, required=True,
-                        help='model name consisting of mobilenet, shufflenet, mnasnet and efficientnet')
+    parser.add_argument('--model', type=str, default='mobilenet',
+                        choices=['mobilenet', 'shufflenet', 'mnasnet', 'efficientnet'],
+                        help='classification model name')
     parser.add_argument('--pretrained', action='store_true',
                         help='load pretrained model')
     parser.add_argument('--img_size', type=int, default=224,
