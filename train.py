@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/home/hoo7311/anaconda3/envs/yolov7/lib/python3.8/site-packages')
+
 import os
 import argparse
 import time
@@ -16,10 +19,12 @@ from torchsummary import summary
 
 from utils.dataset import load_dataloader
 from utils.callback import CheckPoint, EarlyStopping
+from utils.scheduler import PolynomialLRDecay, CosineWarmupLR
+from utils.plots import plot_loss_graphs
 
 
 logger = logging.getLogger('The logs of model training')
-logger.setLvel(logging.INFO)
+logger.setLevel(logging.INFO)
 stream_handler = logging.StreamHandler()
 logger.addHandler(stream_handler)
 
@@ -90,16 +95,16 @@ def valid_on_batch(
 
 
 def training(
-    model: nn.Module,
+    model,
     train_loader,
     valid_loader,
     lr: float,
     weight_decay: float,
     epochs: int,
     momentum: Optional[float]=0.9,
-    optimizer: str='momentum',
-    lr_scheduling: bool,
-    lr_scheduler,
+    optimizer_name: str='momentum',
+    lr_scheduling: bool=True,
+    lr_scheduler_name: str='poly',
     check_point: bool=True,
     early_stop: bool=False,
     project_name: str='experiment1',
@@ -109,10 +114,10 @@ def training(
     es_patience: int=30,
 ):
     # settings for training
-    assert optimizer in ('momentum', 'adam'), \
-        f'{optimizer} does not exists.'
+    assert optimizer_name in ('momentum', 'adam'), \
+        f'{optimizer_name} does not exists.'
 
-    os.makedirs(f'./runs/{project_name}/weights', parents=True, exist_ok=True)
+    os.makedirs(f'./runs/{project_name}/weights', exist_ok=True)
     cp = CheckPoint(verbose=True)
 
     es_path = f'./runs/{project_name}/weights/es_weight.pt'
@@ -126,9 +131,7 @@ def training(
 
     loss_func = nn.CrossEntropyLoss(weight=class_weight)
 
-    if optimizer == 'momentum':
-        assert momentum is not None, 
-            f'You should set momentum constant.'
+    if optimizer_name == 'momentum':
         optimizer = optim.SGD(
             model.parameters(),
             momentum=momentum,
@@ -147,8 +150,20 @@ def training(
             betas=betas,
         )
     logger.info(f'optimizer {optimizer} ready.')
+    
+    if lr_scheduler_name == 'poly':
+        lr_scheduler = PolynomialLRDecay(
+            optimizer=optimizer,
+            max_decay_steps=epochs,
+        )
+    else:
+        lr_scheduler = CosineWarmupLR(
+            optimizer=optimizer,
+            epochs=epochs,
+            warmup_epochs=int(epochs*0.1),
+        )
 
-    writer = SummaryWriter(log_dir=project_name)
+    writer = SummaryWriter(log_dir=f'./runs/{project_name}/weights')
 
     loss_list, acc_list = [], []
     val_loss_list, val_acc_list = [], []
@@ -178,20 +193,20 @@ def training(
         )
         ####################################################
 
-        logger(f'\n{"="*30} Epoch {epoch+1}/{epochs} {"="*30}'
-               f'\ntime: {time.time() - init_time:.2f}s'
-               f'   lr = {optimizer.param_groups[0]["lr"]}')
-        logger(f'\ntrain average loss: {train_loss:.3f}'
-               f'  accuracy: {train_acc:.3f}')
-        logger(f'\nvalid average loss: {valid_loss:.3f}'
-               f'  accuracy: {valid_acc:.3f}')
-        logger(f'\n{"="*80}')
+        logger.info(f'\n{"="*30} Epoch {epoch+1}/{epochs} {"="*30}'
+                    f'\ntime: {(time.time() - epoch_time):.2f}s'
+                    f'   lr = {optimizer.param_groups[0]["lr"]}')
+        logger.info(f'\ntrain average loss: {train_loss:.3f}'
+                    f'  accuracy: {train_acc:.3f}')
+        logger.info(f'\nvalid average loss: {valid_loss:.3f}'
+                    f'  accuracy: {valid_acc:.3f}')
+        logger.info(f'\n{"="*80}')
 
         writer.add_scalar('lr', optimizer.param_groups[0]["lr"], epoch)
-        writer.add_scalar('train/loss', train_loss.item(), epoch)
-        writer.add_scalar('train/accuracy', train_acc.item(), epoch)
-        writer.add_scalar('valid/loss', valid_loss.item(), epoch)
-        writer.add_scalar('valid/accuracy', valid_acc.item(), epoch)
+        writer.add_scalar('train/loss', train_loss, epoch)
+        writer.add_scalar('train/accuracy', train_acc, epoch)
+        writer.add_scalar('valid/loss', valid_loss, epoch)
+        writer.add_scalar('valid/accuracy', valid_acc, epoch)
 
         if lr_scheduling:
             lr_scheduler.step()
@@ -210,15 +225,15 @@ def training(
                       '##########################')
                 break
             
-        logger(f'\nTotal training time is {time.time() - start_training:.2f}s')
-
-        return {
-            'model': model,
-            'loss': loss_list,
-            'acc': acc_list,
-            'val_loss': val_loss_list,
-            'val_acc': val_acc_list,
-        }
+    logger.info(f'\nTotal training time is {time.time() - start_training:.2f}s')
+    
+    return {
+        'model': model,
+        'loss': loss_list,
+        'acc': acc_list,
+        'val_loss': val_loss_list,
+        'val_acc': val_acc_list,
+    }
 
 
 def get_args_parser():
@@ -250,11 +265,13 @@ def get_args_parser():
                         help='set optimizer (sgd momentum and adam)')
     parser.add_argument('--num_classes', default=100, type=int,
                         help='class number of dataset')
-    parser.add_argument('--lr_scheduling', action='store_true'
+    parser.add_argument('--lr_scheduling', action='store_true',
                         help='apply learning rate scheduler')
-    parser.add_argument('--check_point', action='store_true'
+    parser.add_argument('--lr_scheduler_name', default='poly', type=str,
+                        help='learning rate scheduler')
+    parser.add_argument('--check_point', action='store_true',
                         help='save weight file when achieve the best score in validation phase')
-    parser.add_argument('--early_stop', action='store_true'
+    parser.add_argument('--early_stop', action='store_true',
                         help='set early stopping if loss of valid is increased')
     parser.add_argument('--es_patience', default=20, type=int,
                         help='patience to stop training by early stopping')
@@ -313,9 +330,9 @@ def main(args):
         weight_decay=args.weight_decay,
         epochs=args.epochs,
         momentum=args.momentum,
-        optimizer=args.optimizer,
+        optimizer_name=args.optimizer,
         lr_scheduling=args.lr_scheduling,
-        lr_scheduler=,
+        lr_scheduler_name=args.lr_scheduler_name,
         check_point=args.check_point,
         early_stop=args.early_stop,
         project_name=args.name,
