@@ -61,7 +61,7 @@ def load_dataloader(
 ):
     assert subset in ('train', 'valid', 'test')
 
-    data_path = path + '/' + subset
+    data_path = path + subset
 
     augmentation = transforms.Compose([
         Padding(fill=fill_color),
@@ -72,7 +72,7 @@ def load_dataloader(
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
     
-    images = ImageFolder(data_path, transform=transform, target_transform=None)
+    images = ImageFolder(data_path, transform=augmentation, target_transform=None)
 
     data_loader = DataLoader(
         images,
