@@ -6,13 +6,13 @@
 
 <div align='center'>
     <a href='./'>
-        <img src = './images/cola_front.JPG'>
+        <img src = './images/cola_front.JPG' width=100>
     </a>
     <a href='./'>
-        <img src = './images/cola_back.JPG'>
+        <img src = './images/cola_back.JPG' width=100>
     </a>
     <a href='./'>
-        <img src = './images/cola_big.JPG'>
+        <img src = './images/cola_big.JPG' width=100>
     </a>
 </div>
 
@@ -20,13 +20,13 @@
 
 <div align='center'>
     <a href='./'>
-        <img src = './images/sprite_zero_front.JPG'>
+        <img src = './images/sprite_zero_front.JPG' width=100>
     </a>
     <a href='./'>
-        <img src = './images/sprite_zero_back.JPG'>
+        <img src = './images/sprite_zero_back.JPG' width=100>
     </a>
     <a href='./'>
-        <img src = './images/sprite_zero.JPG'>
+        <img src = './images/sprite_zero.JPG' width=100>
     </a>
 </div>
 
