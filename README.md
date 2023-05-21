@@ -1,5 +1,10 @@
 # Build Deep Learning Model for blind individuals  
 - Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)  
+- Number of Parameters (based on 33 classes):  
+
+|ShuffleNetV2|MobileNetV3|MNASNet|EfficientNetV2|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|444,292|1,620,356|5,129,356|20.305.588|
 
 
 ### Dataset 
