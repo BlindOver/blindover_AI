@@ -1,7 +1,10 @@
 # Build Deep Learning Model for blind individuals  
 - Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)  
 
-### Sample images  
+
+### Dataset 
+
+**Sample images**  
 - Coca Cola  
 
 <div align='center'>
@@ -30,8 +33,41 @@
     </a>
 </div>
 
+**Classes**  
+- 2%
+- 박카스
+- 칠성 사이다
+- 칠성 사이다 제로
+- 초코 우유
+- 코카 콜라
+- 데미소다 사과
+- 데미소다 복숭아
+- 솔의눈
+- 환타 오렌지
+- 게토레이
+- 제티
+- 맥콜
+- 우유
+- 밀키스
+- 밀키스 제로
+- 마운틴듀
+- 펩시
+- 펩시 제로
+- 포카리 스웨트
+- 파워에이드
+- 레드불
+- 식혜
+- 스프라이트 제로
+- 딸기 우유
+- 비타 500
+- 브이톡 블루레몬
+- 브이톡 복숭아
+- 웰치스 포도
+- 웰치스 오렌지
+- 웰치스 화이트그레이프
+- 제로 콜라
 
-### Dataset Directory Guide
+**Directory Guide**
 ```
 path : dataset/
 ├── images
