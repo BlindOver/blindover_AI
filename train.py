@@ -293,6 +293,7 @@ def main(args):
 
     train_loader = load_dataloader(
         path=args.data_path,
+        normalization=args.normalization,
         img_size=args.img_size,
         subset='train',
         num_workers=args.num_workers,
@@ -301,6 +302,7 @@ def main(args):
 
     valid_loader = load_dataloader(
         path=args.data_path,
+        normalization=args.normalization,
         img_size=args.img_size,
         subset='valid',
         num_workers=args.num_workers,
