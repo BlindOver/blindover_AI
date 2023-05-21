@@ -244,6 +244,8 @@ def get_args_parser():
     parser = argparse.ArgumentParser(description='Training Model', add_help=False)
     parser.add_argument('--data_path', type=str, required=True,
                         help='data directory for training')
+    parser.add_argument('--normalization', action='store_true',
+                        help='data normalization for training')
     parser.add_argument('--name', type=str, default='experiment1',
                         help='create a new folder')
     parser.add_argument('--model', type=str, default='mobilenet',
