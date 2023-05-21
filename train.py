@@ -194,7 +194,7 @@ def training(
             log_step=valid_log_step,
         )
         val_loss_list.append(valid_loss)
-        val_acc_list.append(val_acc_loss)
+        val_acc_list.append(valid_acc)
         ####################################################
 
         logger.info(f'\n{"="*30} Epoch {epoch+1}/{epochs} {"="*30}'
