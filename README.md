@@ -60,26 +60,5 @@ python3 train.py --data_path '{dataset directory}' --name 'exp' --model '{the on
 python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}' --weight './runs/exp/weights/best.pt' --img_size 224 --num_workers 8 --batch_size 32 --num_classes 100
 ```
 
-
-
-
-## Teaser
-
-Yolov7-semantic & YOLOv7-panoptic & YOLOv7-caption
-
-<div align="center">
-    <a href="./">
-        <img src="./figure/tennis.jpg" width="24%"/>
-    </a>
-    <a href="./">
-        <img src="./figure/tennis_semantic.jpg" width="24%"/>
-    </a>
-    <a href="./">
-        <img src="./figure/tennis_panoptic.png" width="24%"/>
-    </a>
-    <a href="./">
-        <img src="./figure/tennis_caption.png" width="24%"/>
-    </a>
-</div>
-
-
+### Acknowledge  
+- 데이터셋 수집에 도움 주신 분들: 이마트24 용인 명지대점, 하나로마트 오산농협본점
