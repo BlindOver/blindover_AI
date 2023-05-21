@@ -51,6 +51,7 @@ class Padding(object):
 
 def load_dataloader(
     path: str,
+    normalization: bool=False,
     img_size: int = 224,
     fill_color: Tuple[int, int, int]=(0, 0, 0),
     subset: str = 'train',
@@ -69,8 +70,14 @@ def load_dataloader(
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomRotation(degrees=(-20, 20)),
         transforms.ToTensor(),
-        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
+    
+    if normalization:
+        augmentation.append(
+            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+        )
+    
+    augmentation = transforms.Compose(augmentation)
     
     images = ImageFolder(data_path, transform=augmentation, target_transform=None)
 
