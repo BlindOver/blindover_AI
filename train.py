@@ -181,6 +181,8 @@ def training(
             loss_func=loss_func,
             log_step=train_log_step,
         )
+        loss_list.append(train_loss)
+        acc_list.append(train_acc)
         ####################################################
 
         #################### validating ####################
@@ -191,6 +193,8 @@ def training(
             device=device,
             log_step=valid_log_step,
         )
+        val_loss_list.append(valid_loss)
+        val_acc_list.append(val_acc_loss)
         ####################################################
 
         logger.info(f'\n{"="*30} Epoch {epoch+1}/{epochs} {"="*30}'
@@ -304,18 +308,22 @@ def main(args):
     if args.model == 'mobilenet':
         from models.mobilenet import MobileNetV3
         model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
+        logger.info('model : MobileNet!')
 
     elif args.model == 'shufflenet':
         from models.shufflenet import ShuffleNetV2
         model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
+        logger.info('model : ShuffleNet!')
 
     elif args.model == 'efficientnet':
         from models.efficientnet import EfficientNetV2
         model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
+        logger.info('EfficientNet!')
 
     elif args.model == 'mnasnet':
         from models.mnasnet import MNASNet
         model = MNASNet(num_classes=args.num_classes, pre_trained=args.pretrained)
+        logger.info('MNASNet!')
 
     else:
         raise ValueError(f'{args.model} does not exists')
