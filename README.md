@@ -1,14 +1,19 @@
 # Build Deep Learning Model for blind individuals  
 - Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)  
 - Number of Parameters (based on 33 classes):  
-
-|ShuffleNetV2|MobileNetV3|MNASNet|EfficientNetV2|  
-|:---:|:---:|:---:|:---:| 
-|375,617|1,551,681|5,043,529|20,219,761|
-
+<div align='center'>
+    |ShuffleNetV2|MobileNetV3|MNASNet|EfficientNetV2|  
+    |:---:|:---:|:---:|:---:| 
+    |375,617|1,551,681|5,043,529|20,219,761|
+</div>
+    
+    
 ### The Pipeline with simple CNN architecture
 
-<img src = "https://github.com/BlindOver/blindover_AI/blob/main/images/pipeline.png?raw=true" width=600>
+<div align='center'>
+    <img src = "https://github.com/BlindOver/blindover_AI/blob/main/images/pipeline.png?raw=true" width=600>
+</div>
+
 
 ### Dataset 
 
@@ -43,13 +48,15 @@
 
 **Classes**  
 
-|2% (0)|박카스 (1)|칠성 사이다 (2)|칠성 사이다 제로 (3)|초코 우유 (4)|코카 콜라 (5)|
-|:---:|:---:|:---:|:---:|:---:|:---:|
-|데미소다 사과 (6)|데미소다 복숭아 (7)|솔의눈 (8)|환타 오렌지 (9)|게토레이 (10)|제티 (11)|
-|맥콜 (12)|우유 (13)|밀키스 (14)|밀키스 제로 (15)|마운틴듀 (16)|펩시 (17)|
-|펩시 제로 (18)|포카리 스웨트 (19)|파워에이드 (20)|레드불 (21)|식혜 (22)|스프라이트 (23)|
-|스프라이트 제로 (24)|딸기 우유 (25)|비타 500 (26)|브이톡 블루레몬 (27)|브이톡 복숭아 (28)|웰치스 포도 (29)|
-|웰치스 오렌지 (30)|웰치스 화이트그레이프 (31)|제로 콜라 (32)|-|-|-|
+<div align='center'>
+    |2% (0)|박카스 (1)|칠성 사이다 (2)|칠성 사이다 제로 (3)|초코 우유 (4)|코카 콜라 (5)|
+    |:---:|:---:|:---:|:---:|:---:|:---:|
+    |데미소다 사과 (6)|데미소다 복숭아 (7)|솔의눈 (8)|환타 오렌지 (9)|게토레이 (10)|제티 (11)|
+    |맥콜 (12)|우유 (13)|밀키스 (14)|밀키스 제로 (15)|마운틴듀 (16)|펩시 (17)|
+    |펩시 제로 (18)|포카리 스웨트 (19)|파워에이드 (20)|레드불 (21)|식혜 (22)|스프라이트 (23)|
+    |스프라이트 제로 (24)|딸기 우유 (25)|비타 500 (26)|브이톡 블루레몬 (27)|브이톡 복숭아 (28)|웰치스 포도 (29)|
+    |웰치스 오렌지 (30)|웰치스 화이트그레이프 (31)|제로 콜라 (32)|-|-|-|
+</div>
 
 
 **Directory Guide**
