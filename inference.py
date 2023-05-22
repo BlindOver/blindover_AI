@@ -5,14 +5,19 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 
+from utils.dataset import Padding
 
-totensor = transforms.ToTensor()
 
+def load_image(path: str, img_size: int=224, fill_color: Tuple[int, int, int]=(0,0,0)):
 
-def load_image(path: str, img_size: int=224):
+    transformation = transforms.Compose([
+        Padding(fill=fill_color),
+        transforms.Resize((img_size, img_size)),
+        transforms.ToTensor(),
+    ])
+    
     img = Image.open(path).convert('RGB')
-    img = img.resize((img_size, img_size))
-    img = totensor(img)
+    img = transformation(img)
     img = img.unsqueeze(dim=0)
     return img
 
@@ -23,5 +28,4 @@ def inference(src: torch.Tensor, model: nn.Module):
         outputs = model(src)
         prob = F.softmax(outputs)
         result = torch.argmax(prob, dim=1)
-
     return result
