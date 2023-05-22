@@ -7,7 +7,7 @@
 |375,617|1,551,681|5,043,529|20,219,761|
     
     
-### The Pipeline with simple CNN architecture
+### The Pipeline of our Process with simple CNN architecture
 
 <div align='center'>
     <img src = "https://github.com/BlindOver/blindover_AI/blob/main/images/pipeline.png?raw=true" width=600>
