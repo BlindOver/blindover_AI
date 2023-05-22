@@ -44,6 +44,8 @@ def get_args_parser():
     parser = argparse.ArgumentParser(description='Training Model', add_help=False)
     parser.add_argument('--data_path', type=str, required=True,
                         help='data directory for training')
+    parser.add_argument('--subset', type=str, default='valid',
+                        help='dataset subset')
     parser.add_argument('--model', type=str, required=True,
                         help='model name consisting of mobilenet, shufflenet, mnasnet and efficientnet')
     parser.add_argument('--weight', type=str, required=True,
@@ -65,7 +67,7 @@ def main(args):
     test_loader = load_dataloader(
         path=args.data_path,
         img_size=args.img_size,
-        subset='test',
+        subset=args.subset,
         num_workers=args.num_workers,
         batch_size=args.batch_size,
         drop_last=False,
