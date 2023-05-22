@@ -25,7 +25,7 @@ def test(
 ):
     model.eval()
     with torch.no_grad():
-        batch_loss, batch_acc = 0, 0
+        batch_acc = 0
         for batch, (images, labels) in enumerate(test_loader):
             images = images.to(device)
             labels = labels.to(device)
@@ -34,7 +34,6 @@ def test(
             output_index = torch.argmax(outputs, dim=1)
             acc = (output_index == labels).sum() / (len(outputs))
 
-            batch_loss += loss.item()
             batch_acc += acc.item()
     
     print(f'{"="*20} Test Results: Accuracy {acc*100:.2f} {"="*20}')
@@ -96,8 +95,9 @@ def main(args):
         raise ValueError(f'{args.model} does not exists')
 
     model.load_state_dict(torch.load(args.weight))
+    model = model.to(device)
 
-    test(test_loader, device=device, model=args.model)
+    test(test_loader, device=device, model=model)
 
 
 if __name__ == '__main__':
