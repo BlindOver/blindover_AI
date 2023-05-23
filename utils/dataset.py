@@ -64,28 +64,28 @@ def load_dataloader(
 
     data_path = path + subset
     
-    augmentation = transforms.Compose([
-        Padding(fill=fill_color),
-        transforms.Resize((img_size, img_size)),
-        transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomRotation(degrees=(-20, 20)),
-        transforms.ToTensor(),
-    ])
+    if subset == 'train':
+        augmentation = [
+            Padding(fill=fill_color),
+            transforms.Resize((img_size, img_size)),
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomRotation(degrees=(-20, 20)),
+            transforms.ToTensor(),
+        ]
     
+    else:
+        augmentation = [
+            Padding(fill=fill_color),
+            transforms.Resize((img_size, img_size)),
+            transforms.ToTensor(),
+        ]    
+        
     if normalization:
         augmentation.append(
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
         )
     
-    if subset == 'train':
-        augmentation = transforms.Compose(augmentation)
-    
-    else:
-        augmentation = transforms.Compose([
-            Padding(fill=fill_color),
-            transforms.Resize((img_size, img_size)),
-            transforms.ToTensor(),
-        ])
+    augmentation = transforms.Compose(augmentation)
     
     images = ImageFolder(data_path, transform=augmentation, target_transform=None)
 
