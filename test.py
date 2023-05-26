@@ -16,26 +16,34 @@ from torchsummary import summary
 
 from utils.dataset import load_dataloader
 from utils.callback import CheckPoint, EarlyStopping
+from utils.plots import plot_results
 
 
 def test(
     test_loader,
     device: str,
     model: nn.Module,
+    project_name: str,
 ):
+    image_list, label_list, output_list = [], [], []
+    
     model.eval()
     with torch.no_grad():
         batch_acc = 0
         for batch, (images, labels) in enumerate(test_loader):
+            image_list.append(images)
+            label_list.append(labels)
             images = images.to(device)
             labels = labels.to(device)
 
             outputs = model(images)
             output_index = torch.argmax(outputs, dim=1)
+            output_list.append(output_index.cpu())
             acc = (output_index == labels).sum() / (len(outputs))
 
             batch_acc += acc.item()
     
+    plt_results(image_list, label_list, output_list, project_name)
     print(f'{"="*20} Test Results: Accuracy {acc*100:.2f} {"="*20}')
 
 
@@ -57,11 +65,14 @@ def get_args_parser():
                         help='batch Size for training model')
     parser.add_argument('--num_classes', type=int, default=100,
                         help='class number of dataset')
-    
+    parser.add_argument('--project_name', type=str, default='prj',
+                        help='create new folder named project name')
     return parser
 
 
 def main(args):
+    
+    os.makedirs(f'./runs/test/{args.project_name}', exist_ok=True)
     
     test_loader = load_dataloader(
         path=args.data_path,
@@ -97,8 +108,8 @@ def main(args):
     model.load_state_dict(torch.load(args.weight))
     model = model.to(device)
 
-    test(test_loader, device=device, model=model)
-
+    test(test_loader, device=device, model=model, project_name=args.project_name)
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Model testing', parents=[get_args_parser()])
