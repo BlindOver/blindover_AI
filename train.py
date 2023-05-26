@@ -117,10 +117,10 @@ def training(
     assert optimizer_name in ('momentum', 'adam'), \
         f'{optimizer_name} does not exists.'
 
-    os.makedirs(f'./runs/{project_name}/weights', exist_ok=True)
+    os.makedirs(f'./runs/train/{project_name}/weights', exist_ok=True)
     cp = CheckPoint(verbose=True)
 
-    es_path = f'./runs/{project_name}/weights/es_weight.pt'
+    es_path = f'./runs/train/{project_name}/weights/es_weight.pt'
     es = EarlyStopping(verbose=True, patience=es_patience, path=es_path)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -163,7 +163,7 @@ def training(
             warmup_epochs=int(epochs*0.1),
         )
 
-    writer = SummaryWriter(log_dir=f'./runs/{project_name}/weights')
+    writer = SummaryWriter(log_dir=f'./runs/train/{project_name}/weights')
 
     loss_list, acc_list = [], []
     val_loss_list, val_acc_list = [], []
@@ -216,8 +216,8 @@ def training(
             lr_scheduler.step()
 
         if check_point:
-            path = './runs/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
-            best_path = f'./runs/{project_name}/weights/best.pt'
+            path = './runs/train/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
+            best_path = f'./runs/train/{project_name}/weights/best.pt'
             cp(valid_loss, model, path)
             cp(valid_loss, model, best_path, save_best=True)
 
