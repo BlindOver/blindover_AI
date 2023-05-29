@@ -77,14 +77,8 @@ path : dataset/
 ### Install virtual environment in Anaconda
 ```
 conda create -n blindover python==3.8
-```
-```
 conda activate blindover
-```
-```
 cd ./blindover_AI
-```
-```
 pip install -r requirements.txt
 ```
 
