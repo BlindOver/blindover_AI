@@ -74,6 +74,20 @@ path : dataset/
 │        ├─ ...
 ```
 
+### Install virtual environment in Anaconda
+```
+conda create -n blindover python==3.8
+```
+```
+conda activate blindover
+```
+```
+cd ./blindover_AI
+```
+```
+pip install -r requirements.txt
+```
+
 ### Training
 ```
 python3 train.py --data_path '{dataset directory}' --name 'exp' --model '{the one of 4 models}' --pretrained --img_size 224 --num_workers 8 --batch_size 32 --epochs 100 --optimizer 'momentum' --lr_scheduling --check_point
