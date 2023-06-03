@@ -6,13 +6,17 @@
 |:---:|:---:|:---:|:---:| 
 |375,617|1,551,681|5,043,529|20,219,761|
     
-    
-### The Pipeline of our Process with simple CNN architecture
+### Overview
+**The Pipeline of our Process with simple CNN architecture**
 
 <div align='center'>
     <img src = "https://github.com/BlindOver/blindover_AI/blob/main/images/pipeline.png?raw=true" width=600>
 </div>
 
+**Features**
+- To avoid image distortion, we apply padding and resize processing.
+- To maximize performance of model on mobile devices, we train various models such as Efficient, MobileNetV3, ShuffleNetV2 and MNASNet and compare their accuracy and inference speed.
+- To address the issue of insufficient data, we utilize image generation models such as Diffusion and DALL-E to increase the number of samples.
 
 ### Dataset 
 
