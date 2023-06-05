@@ -14,13 +14,13 @@
 </div>
 
 **Features**
-- To avoid image distortion, we apply **padding** and resize processing.
-- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and MNASNet and compare their accuracy and inference speed.
-- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples.
+- To avoid image distortion, we apply **padding** and resize processing. ([code](https://github.com/BlindOver/blindover_AI/blob/d414b5aad9844feda26e95afc6f0b44c5247378f/utils/dataset.py#L32))
+- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and MNASNet and compare their accuracy and inference speed. ([code](https://github.com/BlindOver/blindover_AI/tree/main/models))
+- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([code](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
 ### Dataset 
 
-**Sample images**  
+**Sample Images**  
 - Coca Cola  
 
 <div align='center'>
@@ -46,6 +46,13 @@
     </a>
     <a href='./'>
         <img src = './images/sprite_zero.JPG' width=200>
+    </a>
+</div>
+
+**Composite Images**
+<div align='center'>
+    <a href='./'>
+        <img src = './images/composite.png' width=500>
     </a>
 </div>
 
