@@ -15,8 +15,22 @@
 
 **Features**
 - To avoid image distortion, we apply **padding** and resize processing. ([code](https://github.com/BlindOver/blindover_AI/blob/d414b5aad9844feda26e95afc6f0b44c5247378f/utils/dataset.py#L32))
+
+```python
+from utils.dataset import Padding
+from PIL import Image
+
+img = Image.open('image.png')
+padded_img = Padding()(img)
+```
+
 - To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and MNASNet and compare their accuracy and inference speed. ([code](https://github.com/BlindOver/blindover_AI/tree/main/models))
 - To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([code](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
+
+```
+python ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
+```
+
 
 ### Dataset 
 
