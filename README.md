@@ -53,7 +53,7 @@
 - Composite Images
 <div align='center'>
     <a href='./'>
-        <img src = './images/composite.png' width=800>
+        <img src = './images/composite_pipeline.png' width=800>
     </a>
 </div>
 
