@@ -35,6 +35,7 @@
     </a>
 </div>
 
+
 - Sprite Zero  
 
 <div align='center'>
@@ -49,12 +50,13 @@
     </a>
 </div>
 
-**Composite Images**
+- Composite Images
 <div align='center'>
     <a href='./'>
         <img src = './images/composite.png' width=800>
     </a>
 </div>
+
 
 **Classes**  
 
