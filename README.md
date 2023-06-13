@@ -2,7 +2,7 @@
 - Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)  
 - Number of Parameters (based on 33 classes):  
 
-|ShuffleNetV2|MobileNetV3|MNASNet|EfficientNetV2|  
+|ShuffleNetV2 (x0.5)|MobileNetV3 (small)|MNASNet|EfficientNetV2|  
 |:---:|:---:|:---:|:---:| 
 |375,617|1,551,681|5,043,529|20,219,761|
     
@@ -25,6 +25,7 @@ padded_img = Padding()(img)
 ```
 
 - To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and MNASNet and compare their accuracy and inference speed. ([code](https://github.com/BlindOver/blindover_AI/tree/main/models))
+- **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([codes](https://github.com/Sangh0/blindover_AI/tree/main/quantization))
 - To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([code](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
 ```
