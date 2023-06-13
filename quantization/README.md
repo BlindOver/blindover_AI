@@ -3,9 +3,9 @@
 
 - Comparison size of models (KB):
 ||ShuffleNetV2 (x0.5)|MobileNetV3 (large)|ResNet18|ResNet50|  
-||:---:|:---:|:---:|:---:|
-|Normal Model|5591.39|22120.23|46827.87|102522.81|
-|Quantized Model|1560.61|5628.04|11833.70|26150.91|
+||:---:|:---:|:---:|:---:|  
+|Normal Model|5591.39|22120.23|46827.87|102522.81|  
+|Quantized Model|1560.61|5628.04|11833.70|26150.91|  
 
 ### References
 - [PyTorch doccument](https://pytorch.org/docs/stable/quantization.html)
