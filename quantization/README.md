@@ -9,11 +9,11 @@
 |Quantized Model|1560.61|5628.04|11833.70|26150.91|  
 |shrinkage factor|3.58|3.93|3.96|3.92|
 
-### References
-- [PyTorch document](https://pytorch.org/docs/stable/quantization.html)
-- [My Repository](https://github.com/Sangh0/Quantization)
-
 ### Training Quantized Model (Static Quantization)
 ```
 python3 train.py --quantization --data_path '{dataset directory}' --name 'exp' --model '{the one of 4 models}' --pretrained --img_size 224 --num_workers 8 --batch_size 32 --epochs 100 --optimizer 'momentum' --lr_scheduling --check_point
 ```
+
+### References
+- [PyTorch document](https://pytorch.org/docs/stable/quantization.html)
+- [My Repository](https://github.com/Sangh0/Quantization)
