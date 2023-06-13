@@ -242,17 +242,29 @@ def training(
 
 def get_args_parser():
     parser = argparse.ArgumentParser(description='Training Model', add_help=False)
+    
+    # dataset parameters
     parser.add_argument('--data_path', type=str, required=True,
                         help='data directory for training')
     parser.add_argument('--normalization', action='store_true',
                         help='data normalization for training')
+
+    # parameter for experiment
     parser.add_argument('--name', type=str, default='experiment1',
                         help='create a new folder')
+    
+    # model parameters
     parser.add_argument('--model', type=str, default='mobilenet',
-                        choices=['mobilenet', 'shufflenet', 'mnasnet', 'efficientnet'],
+                        choices=['mobilenet', 'shufflenet', 'mnasnet', 'efficientnet', 'resnet18', 'resnet50'],
                         help='classification model name')
     parser.add_argument('--pretrained', action='store_true',
                         help='load pretrained model')
+
+    # quantization
+    parser.add_argument('--quantization', action='store_true',
+                        help='apply learning rate scheduler')
+    
+    # hyperparameters for training
     parser.add_argument('--img_size', type=int, default=224,
                         help='image resize size before applying cropping')
     parser.add_argument('--num_workers', default=8, type=int,
@@ -291,6 +303,9 @@ def get_args_parser():
 
 def main(args):
 
+    if args.quantization:
+        assert args.model in ('shufflenet', 'mobilenet', 'resnet18', 'resnet50')
+
     train_loader = load_dataloader(
         path=args.data_path,
         normalization=args.normalization,
@@ -308,26 +323,48 @@ def main(args):
         num_workers=args.num_workers,
         batch_size=args.batch_size,
     )
-
+    
     if args.model == 'mobilenet':
-        from models.mobilenet import MobileNetV3
-        model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
+        if args.quantization:
+            from quantization.quantized_models import QuantizedMobileNetV3
+            model = QuantizedMobileNetV3(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
+        
+        else:
+            from models.mobilenet import MobileNetV3
+            model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
+        
         logger.info('model : MobileNet!')
 
     elif args.model == 'shufflenet':
-        from models.shufflenet import ShuffleNetV2
-        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
+        if args.quantization:
+            from quantization.quantized_models import QuantizedShuffleNetV2
+            model = QuantizedShuffleNetV2(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
+    
+        else:
+            from models.shufflenet import ShuffleNetV2
+            model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
+        
         logger.info('model : ShuffleNet!')
 
     elif args.model == 'efficientnet':
         from models.efficientnet import EfficientNetV2
         model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
-        logger.info('EfficientNet!')
+        logger.info('model : EfficientNet!')
 
     elif args.model == 'mnasnet':
         from models.mnasnet import MNASNet
         model = MNASNet(num_classes=args.num_classes, pre_trained=args.pretrained)
-        logger.info('MNASNet!')
+        logger.info('model : MNASNet!')
+
+    elif args.model == 'resnet18':
+        from quantization.quantized_models import QuantizedResNet18
+        model = QuantizedResNet18(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
+        logger.info('model : ResNet18!')
+
+    elif args.model == 'resnet50':
+        from quantization.quantized_models import QuantizedResNet50
+        model = QuantizedResNet50(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
+        logger.info('model : ResNet50!')
 
     else:
         raise ValueError(f'{args.model} does not exists')
