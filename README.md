@@ -2,7 +2,7 @@
 - Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)  
 - Number of Parameters (based on 33 classes):  
 
-|ShuffleNetV2|MobileNetV3|MNASNet|EfficientNetV2|  
+|ShuffleNetV2 (x0.5)|MobileNetV3 (small)|MNASNet|EfficientNetV2|  
 |:---:|:---:|:---:|:---:| 
 |375,617|1,551,681|5,043,529|20,219,761|
     
