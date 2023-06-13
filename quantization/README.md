@@ -7,6 +7,7 @@
 |:---:|:---:|:---:|:---:|:---:|  
 |Normal Model|5591.39|22120.23|46827.87|102522.81|  
 |Quantized Model|1560.61|5628.04|11833.70|26150.91|  
+|shrinkage factor|3.58|3.93|3.96|3.92|
 
 ### References
 - [PyTorch document](https://pytorch.org/docs/stable/quantization.html)
