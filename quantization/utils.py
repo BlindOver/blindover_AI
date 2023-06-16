@@ -5,10 +5,10 @@ import torchvision.models as models
 import torchvision.models.quantization as quantize_models
 
 
-def print_size_of_model(model, label=""):
-    torch.save(model.state_dict(), "temp.p")
-    size=os.path.getsize("temp.p")
-    print("model: ", label, ' \t', 'Size (KB):', size/1e3)
+def print_size_of_model(model, label=''):
+    torch.save(model.state_dict(), 'temp.p')
+    size = os.path.getsize('temp.p')
+    print('model: ', label, ' \t', 'Size (KB):', size / 1e3)
     os.remove('temp.p')
     return size
 
