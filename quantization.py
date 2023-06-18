@@ -1,3 +1,5 @@
+import argparse
+
 import torch
 
 
@@ -55,6 +57,7 @@ def main(args):
     model = load_model(args.model_name, args.weight, args.num_classes)
     quantized_model = model_quantization(model)
     save_quantized_weight(quantized_model, args.weight)
+    print('We have successfully completed the model quantization!')
 
 
 if __name__ == '__main__':
