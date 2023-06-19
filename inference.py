@@ -25,6 +25,13 @@ classes = {
 }
 
 
+transformation = transforms.Compose([
+    Padding(fill=(0, 0, 0)),
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+])
+
+
 def load_image(src: str):    
     img = Image.open(src).convert('RGB')
     img = transformation(img)
@@ -37,7 +44,7 @@ def inference(src: torch.Tensor, model: nn.Module):
     with torch.no_grad():
         outputs = model(src)
         prob = F.softmax(outputs)
-        result = classes[torch.argmax(prob, dim=1)]
+        result = classes[torch.argmax(prob, dim=1).item()]
     return result
 
 
@@ -70,22 +77,10 @@ def get_args_parser():
                         help='input image')
     parser.add_argument('--weight', type=str, required=True,
                         help='a path of trained weight file')
-    parser.add_argument('--fill_color', type=int, default=0,
-                        help='RGB color')
-    parser.add_argument('--num_classes', type=int, default=33,
-                        help='the number of classes')
-    parser.add_argument('--img_size', type=int, default=224,
-                        help='image size')
     return parser
 
 
 def main(args):
-    transformation = transforms.Compose([
-        Padding(fill=(args.fill_color, args.fill_color, args.fill_color)),
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.ToTensor(),
-    ])
-
     model = load_model(args.model_name, args.weight)
     img, _ = load_image(args.src)
     result = inference(img, model)
