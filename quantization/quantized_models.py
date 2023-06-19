@@ -56,7 +56,7 @@ class QuantizedMobileNetV3(nn.Module):
 
 class QuantizedShuffleNetV2(nn.Module):
 
-    def __inti__(
+    def __init__(
         self,
         pre_trained: bool=True,
         quantize: bool=True,
