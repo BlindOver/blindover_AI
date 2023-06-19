@@ -87,8 +87,8 @@ def main(args):
     ])
 
     model = load_model(args.model_name, args.weight)
-    img, src = load_image(args.src)
-    result = inference(src, model)
+    img, _ = load_image(args.src)
+    result = inference(img, model)
     print(result)
 
 
