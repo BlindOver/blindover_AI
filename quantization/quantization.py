@@ -5,19 +5,19 @@ import torch
 
 def load_model(model_name, weight, num_classes):
     if model_name == 'shufflenet':
-        from models.shufflenet import ShuffleNetV2
+        from ..models.shufflenet import ShuffleNetV2
         model = ShuffleNetV2(num_classes=num_classes, pre_trained=False)
 
     elif model_name == 'mobilenet':
-        from models.mobilenet import MobileNetV3
+        from ..models.mobilenet import MobileNetV3
         model = MobileNetV3(num_classes=num_classes, pre_trained=False)
 
     elif model_name == 'mnasnet':
-        from models.mnasnet import MNASNet
+        from ..models.mnasnet import MNASNet
         model = MNASNet(num_classes=num_classes, pre_trained=False)
     
     elif model_name == 'efficientnet':
-        from models.efficientnet import EfficientNetV2
+        from ..models.efficientnet import EfficientNetV2
         model = EfficientNetV2(num_classes=num_classes, pre_trained=False)
 
     else:
