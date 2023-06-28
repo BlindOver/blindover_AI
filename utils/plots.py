@@ -19,7 +19,7 @@ def plot_loss_graphs(history, project_name):
     plt.plot(np.arange(len(train_acc)), train_acc, label='train')
     plt.plot(np.arange(len(valid_acc)), valid_acc, label='valid')
     plt.legend(loc='best')
-    plt.savefig(f'./runs/{project_name}/accuracy_graph.png')
+    plt.savefig(f'./runs/train/{project_name}/accuracy_graph.png')
     
     
 def plot_results(images, labels, outputs, project_name):
