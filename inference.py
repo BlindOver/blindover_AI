@@ -12,6 +12,8 @@ from models.efficientnet import EfficientNetV2
 from models.mnasnet import MNASNet
 from models.mobilenet import MobileNetV3
 from models.shufflenet import ShuffleNetV2
+from quantization.quantization import model_quantization
+from quantization.utils import print_latency
 
 
 classes = {
@@ -48,7 +50,7 @@ def inference(src: torch.Tensor, model: nn.Module):
     return result
 
 
-def load_model(model_name: str, weight: Optional[str]):
+def load_model(model_name: str, weight: Optional[str]=None):
     if model_name == 'mobilenet':
         model = MobileNetV3(num_classees=33, pre_trained=False)
 
@@ -64,8 +66,9 @@ def load_model(model_name: str, weight: Optional[str]):
     else:
         raise ValueError(f'{model_name} does not exists')
 
-    model.load_state_dict(torch.load(weight, map_location=torch.device('cpu')))
-    
+    if weight is not None:
+        model.load_state_dict(torch.load(weight, map_location=torch.device('cpu')))
+
     return model
 
 
@@ -77,13 +80,28 @@ def get_args_parser():
                         help='input image')
     parser.add_argument('--weight', type=str, required=True,
                         help='a path of trained weight file')
+    parser.add_argument('--quantized', action='store_true',
+                        help='load quantized model')
+    parser.add_argument('measure_latency', action='store_true',
+                        help='print latency time')
     return parser
 
 
 def main(args):
-    model = load_model(args.model_name, args.weight)
+    if args.quantized:
+        model = load_model(args.model_name, weight=None)
+        model = model_quantization(model)
+        model.load_state_dict(torch.load(args.weight, map_location=torch.device('cpu')))
+    
+    else:
+        model = load_model(args.model_name, args.weight)
+
     img, _ = load_image(args.src)
-    result = inference(img, model)
+
+    if args.measure_latency:
+        result = print_latency(inference(img, model), req_return=True)
+    else:
+        result = inference(img, model)
     print(result)
 
 
