@@ -11,10 +11,6 @@ class CheckPoint(object):
 
     def __call__(self, val_loss, model, path):
         score = -val_loss
-        if save_best:
-            if score > self.best_score:
-                torch.save(model.state_dict(), path)
-
         if self.best_score is None:
             self.best_score = score
             self.save_checkpoint(val_loss, model, path)
