@@ -11,7 +11,7 @@ def plot_loss_graphs(history, project_name):
     plt.plot(np.arange(len(train_loss)), train_loss, label='train')
     plt.plot(np.arange(len(valid_loss)), valid_loss, label='valid')
     plt.legend(loc='best')
-    plt.savefig(f'./runs/{project_name}/loss_graph.png')
+    plt.savefig(f'./runs/train/{project_name}/loss_graph.png')
     
     train_acc = history['acc']
     valid_acc = history['val_acc']
