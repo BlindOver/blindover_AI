@@ -98,9 +98,9 @@ def training(
     model,
     train_loader,
     valid_loader,
-    lr: float,
-    weight_decay: float,
-    epochs: int,
+    lr: float=0.001,
+    weight_decay: float=5e-4,
+    epochs: int=100,
     momentum: Optional[float]=0.9,
     optimizer_name: str='momentum',
     lr_scheduling: bool=True,
@@ -110,12 +110,18 @@ def training(
     project_name: str='experiment1',
     class_weight: Optional[torch.Tensor]=None,
     train_log_step: int=300,
-    valid_log_step: int = 50,
+    valid_log_step: int=50,
     es_patience: int=30,
+    quantization: bool=False,
 ):
     # settings for training
     assert optimizer_name in ('momentum', 'adam'), \
         f'{optimizer_name} does not exists.'
+
+    if quantization:
+        from quantization.quantization import prepare_quantization
+        project_name += '_quantization'
+        model = prepare_quantization(model)
 
     os.makedirs(f'./runs/train/{project_name}/weights', exist_ok=True)
     cp = CheckPoint(verbose=True)
@@ -163,7 +169,7 @@ def training(
             warmup_epochs=int(epochs*0.1),
         )
 
-    writer = SummaryWriter(log_dir=f'./runs/train/{project_name}/weights')
+    writer = SummaryWriter(log_dir=f'./runs/train/{project_name}')
 
     loss_list, acc_list = [], []
     val_loss_list, val_acc_list = [], []
@@ -257,10 +263,14 @@ def get_args_parser():
     
     # model parameters
     parser.add_argument('--model', type=str, default='mobilenet',
-                        choices=['mobilenet', 'shufflenet', 'mnasnet', 'efficientnet', 'resnet18', 'resnet50'],
+                        choices=['shufflenet', 'mobilenet', 'efficientnet', 'resnet18', 'resnet50'],
                         help='classification model name')
     parser.add_argument('--pretrained', action='store_true',
                         help='load pretrained model')
+    
+    # quantization
+    parser.add_argument('--quantization', action='store_true',
+                        help='model quantization')
     
     # hyperparameters for training
     parser.add_argument('--num_workers', default=8, type=int,
@@ -317,35 +327,39 @@ def main(args):
         batch_size=args.batch_size,
     )
     
+    q = True if args.quantization else False
+
     if args.model == 'mobilenet':
         from models.mobilenet import MobileNetV3
-        model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
+        model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
         logger.info('model : MobileNet!')
 
     elif args.model == 'shufflenet':
         from models.shufflenet import ShuffleNetV2
-        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
+        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
         logger.info('model : ShuffleNet!')
 
     elif args.model == 'efficientnet':
         from models.efficientnet import EfficientNetV2
-        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
+        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
         logger.info('model : EfficientNet!')
 
     elif args.model == 'resnet18':
         from models.resnet import ResNet18
-        model = ResNet18(num_classes=args.num_classes, pre_trained=args.pretrained)
+        model = ResNet18(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
         logger.info('model : ResNet18!')
 
     elif args.model == 'resnet50':
         from models.resnet import ResNet50
-        model = ResNet50(num_classes=args.num_classes, pre_trained=args.pretrained)
+        model = ResNet50(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
         logger.info('model : ResNet50!')
 
     else:
         raise ValueError(f'{args.model} does not exists')
 
     summary(model, (3, args.img_size, args.img_size), device='cpu')
+
+    
 
     history = training(
         model=model,
@@ -364,9 +378,11 @@ def main(args):
         train_log_step=args.train_log_step,
         valid_log_step=args.valid_log_step,
         es_patience=args.es_patience,
+        quantization=args.quantization,
     )
 
-    plot_loss_graphs(history, project_name=args.name)
+    prj_name = args.name + '_quantization' if q else args.name
+    plot_loss_graphs(history, project_name=prj_name)
 
 
 if __name__ == '__main__':
