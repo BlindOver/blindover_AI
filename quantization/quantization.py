@@ -37,10 +37,7 @@ def prepare_quantization(model):
 
 
 def model_quantization(model):
-    model.eval()
-    model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
-    quantized_model = torch.quantization.prepare(model)
-    return torch.quantization.convert(quantized_model)
+    return torch.quantization.convert(model)
 
 
 def save_quantized_weight(quantized_model, weight_dir):
