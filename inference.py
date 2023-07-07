@@ -12,7 +12,7 @@ from models.efficientnet import EfficientNetV2
 from models.mnasnet import MNASNet
 from models.mobilenet import MobileNetV3
 from models.shufflenet import ShuffleNetV2
-from quantization.quantization import model_quantization
+from quantization.quantization import quantization_serving, load_model
 from quantization.utils import print_latency
 
 
@@ -50,28 +50,6 @@ def inference(src: torch.Tensor, model: nn.Module):
     return result
 
 
-def load_model(model_name: str, weight: Optional[str]=None):
-    if model_name == 'mobilenet':
-        model = MobileNetV3(num_classees=33, pre_trained=False)
-
-    elif model_name == 'shufflenet':
-        model = ShuffleNetV2(num_classes=33, pre_trained=False)
-
-    elif model_name == 'mnasnet':
-        model = MNASNet(num_classes=33, pre_trained=False)
-    
-    elif model_name == 'efficientnet':
-        model = EfficientNetV2(num_classes=33, pre_trained=False)
-
-    else:
-        raise ValueError(f'{model_name} does not exists')
-
-    if weight is not None:
-        model.load_state_dict(torch.load(weight, map_location=torch.device('cpu')))
-
-    return model
-
-
 def get_args_parser():
     parser = argparse.ArgumentParser(description='Inference', add_help=False)
     parser.add_argument('--model_name', type=str, required=True,
@@ -82,19 +60,20 @@ def get_args_parser():
                         help='a path of trained weight file')
     parser.add_argument('--quantized', action='store_true',
                         help='load quantized model')
-    parser.add_argument('measure_latency', action='store_true',
+    parser.add_argument('--measure_latency', action='store_true',
                         help='print latency time')
+    parser.add_argument('--num_classes', type=int, default=33,
+                        help='the number of classes')
     return parser
 
 
 def main(args):
     if args.quantized:
-        model = load_model(args.model_name, weight=None)
-        model = model_quantization(model)
-        model.load_state_dict(torch.load(args.weight, map_location=torch.device('cpu')))
-    
+        model = quantization_serving(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
+        
     else:
-        model = load_model(args.model_name, args.weight)
+        model = load_model(args.model_name, num_classes=args.num_classes, quantization=False)
+        model.load_state_dict(torch.load(args.weight))
 
     img, _ = load_image(args.src)
 
