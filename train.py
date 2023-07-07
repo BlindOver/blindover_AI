@@ -225,14 +225,15 @@ def training(
             path = './runs/train/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
             best_path = f'./runs/train/{project_name}/weights/best.pt'
             if quantization:
-                model = model_quantization(model)
-            cp(valid_loss, model, path)
+                cp(valid_loss, model_quantization(model), path)
+            else:
+                cp(valid_loss, model, path)
 
         if early_stop:
             if quantization:
-                model = model_quantization(model)
-
-            es(valid_loss, model)
+                es(valid_loss, model_quantization(model))
+            else:
+                es(valid_loss, model)
             if es.early_stop:
                 print('\n##########################\n'
                       '##### Early Stopping #####\n'
