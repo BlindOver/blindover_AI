@@ -3,9 +3,32 @@
 - Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)
 - Number of Parameters (based on 33 classes):
 
-| ShuffleNetV2 (x0.5) | MobileNetV3 (small) |  MNASNet  | EfficientNetV2 |
-| :------------------: | :-----------------: | :-------: | :------------: |
-|       375,617       |      1,551,681      | 5,043,529 |   20,219,761   |
+| ShuffleNetV2 (x0.5) | MobileNetV3 (small) | EfficientNetV2 | ResNet18 | ResNet50 |
+| :------------------: | :-----------------: | :------------: | :------: | :------: |
+|       375,617       |      1,551,681      |  20,219,761   |  11,193,441  |  23,575,649  |
+
+### Training and Testing
+
+**Install virtual environment in Anaconda**
+
+```
+conda create -n blindover python==3.8
+conda activate blindover
+cd ./blindover_AI
+pip install -r requirements.txt
+```
+
+**Training**
+
+```
+python3 train.py --data_path '{dataset directory}' --name 'exp' --model '{the one of 4 models}' --pretrained --img_size 224 --num_workers 8 --batch_size 32 --epochs 100 --optimizer 'momentum' --lr_scheduling --check_point
+```
+
+**Testing**
+
+```
+python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}' --weight './runs/exp/weights/best.pt' --img_size 224 --num_workers 8 --batch_size 32 --num_classes 100
+```
 
 ### Overview
 
@@ -26,11 +49,14 @@
   img = Image.open('image.png')
   padded_img = Padding()(img)
   ```
-- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and MNASNet and compare their accuracy and inference speed. ([code](https://github.com/BlindOver/blindover_AI/tree/main/models))
+- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet compare their accuracy and inference speed. ([code](https://github.com/BlindOver/blindover_AI/tree/main/models))
 - **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([codes](https://github.com/Sangh0/blindover_AI/tree/main/quantization/quantization.py))
 
-  ```
-  python ./quantization/quantization.py --model_name {model name} --weight {weight path} --num_classes 33
+  ```python
+  from quantization.quantization import quantization_serving
+
+  quantized_weight = './quantized_weight.pt'
+  quantized_model = quantization_serving('shufflenet', quantized_weight, num_classes=33)
   ```
 - To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([code](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
@@ -105,29 +131,6 @@ path : dataset/
 │    ├─ ...
 │        ├─ ...
 │        ├─ ...
-```
-
-### Install virtual environment in Anaconda
-
-```
-conda create -n blindover python==3.8
-conda activate blindover
-cd ./blindover_AI
-pip install -r requirements.txt
-```
-
-### Training
-
-```
-python3 train.py --data_path '{dataset directory}' --name 'exp' --model '{the one of 4 models}' --pretrained --img_size 224 --num_workers 8 --batch_size 32 --epochs 100 --optimizer 'momentum' --lr_scheduling --check_point
-```
-
-### Testing
-
-- Testing model to evaluate the performance in test set
-
-```
-python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}' --weight './runs/exp/weights/best.pt' --img_size 224 --num_workers 8 --batch_size 32 --num_classes 100
 ```
 
 ### Acknowledgements
