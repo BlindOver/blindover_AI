@@ -3,13 +3,13 @@ import torch
 
 
 class CheckPoint(object):
-    def __init__(self, verbose=False, trace_func=print, save_best=False):
+    def __init__(self, verbose=False, trace_func=print):
         self.verbose = verbose
         self.trace_func = trace_func
         self.val_loss_min = np.inf
         self.best_score = None
 
-    def __call__(self, val_loss, model, path, save_best=False):
+    def __call__(self, val_loss, model, path):
         score = -val_loss
         if save_best:
             if score > self.best_score:
