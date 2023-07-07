@@ -248,7 +248,9 @@ def get_args_parser():
                         help='data directory for training')
     parser.add_argument('--normalization', action='store_true',
                         help='data normalization for training')
-
+    parser.add_argument('--img_size', type=int, default=224,
+                        help='image resize size before applying cropping')
+    
     # parameter for experiment
     parser.add_argument('--name', type=str, default='experiment1',
                         help='create a new folder')
@@ -259,18 +261,12 @@ def get_args_parser():
                         help='classification model name')
     parser.add_argument('--pretrained', action='store_true',
                         help='load pretrained model')
-
-    # quantization
-    parser.add_argument('--quantization', action='store_true',
-                        help='apply learning rate scheduler')
     
     # hyperparameters for training
-    parser.add_argument('--img_size', type=int, default=224,
-                        help='image resize size before applying cropping')
     parser.add_argument('--num_workers', default=8, type=int,
                         help='number of workers in cpu')
     parser.add_argument('--batch_size', default=32, type=int,
-                        help='batch Size for training model')
+                        help='batch size for training model')
     parser.add_argument('--lr', default=1e-2, type=float,
                         help='learning rate')
     parser.add_argument('--weight_decay', default=5e-4, type=float,
@@ -281,7 +277,7 @@ def get_args_parser():
                         help='momentum constant for SGD momentum and Adam (beta1)')
     parser.add_argument('--optimizer', default='momentum', type=str,
                         help='set optimizer (sgd momentum and adam)')
-    parser.add_argument('--num_classes', default=100, type=int,
+    parser.add_argument('--num_classes', default=33, type=int,
                         help='class number of dataset')
     parser.add_argument('--lr_scheduling', action='store_true',
                         help='apply learning rate scheduler')
@@ -303,9 +299,6 @@ def get_args_parser():
 
 def main(args):
 
-    if args.quantization:
-        assert args.model in ('shufflenet', 'mobilenet', 'resnet18', 'resnet50')
-
     train_loader = load_dataloader(
         path=args.data_path,
         normalization=args.normalization,
@@ -325,25 +318,13 @@ def main(args):
     )
     
     if args.model == 'mobilenet':
-        if args.quantization:
-            from quantization.quantized_models import QuantizedMobileNetV3
-            model = QuantizedMobileNetV3(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
-        
-        else:
-            from models.mobilenet import MobileNetV3
-            model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
-        
+        from models.mobilenet import MobileNetV3
+        model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : MobileNet!')
 
     elif args.model == 'shufflenet':
-        if args.quantization:
-            from quantization.quantized_models import QuantizedShuffleNetV2
-            model = QuantizedShuffleNetV2(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
-    
-        else:
-            from models.shufflenet import ShuffleNetV2
-            model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
-        
+        from models.shufflenet import ShuffleNetV2
+        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : ShuffleNet!')
 
     elif args.model == 'efficientnet':
@@ -351,19 +332,14 @@ def main(args):
         model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : EfficientNet!')
 
-    elif args.model == 'mnasnet':
-        from models.mnasnet import MNASNet
-        model = MNASNet(num_classes=args.num_classes, pre_trained=args.pretrained)
-        logger.info('model : MNASNet!')
-
     elif args.model == 'resnet18':
-        from quantization.quantized_models import QuantizedResNet18
-        model = QuantizedResNet18(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
+        from models.resnet import ResNet18
+        model = ResNet18(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : ResNet18!')
 
     elif args.model == 'resnet50':
-        from quantization.quantized_models import QuantizedResNet50
-        model = QuantizedResNet50(pre_trained=args.pretrained, quantize=True, num_classes=args.num_classes)
+        from models.resnet import ResNet50
+        model = ResNet50(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : ResNet50!')
 
     else:
