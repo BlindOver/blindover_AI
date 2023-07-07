@@ -37,6 +37,8 @@ def prepare_quantization(model):
 
 
 def model_quantization(model):
+    model.eval()
+    model = model.cpu()
     return torch.quantization.convert(model)
 
 
