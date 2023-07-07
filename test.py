@@ -1,27 +1,19 @@
 import os
 import argparse
 import time
-import logging
-import numpy as np
-import matplotlib.pyplot as plt
-from tqdm.auto import tqdm
 from typing import *
 
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import Dataset
-from torch.utils.tensorboard import SummaryWriter
-from torchsummary import summary
 
 from utils.dataset import load_dataloader
-from utils.callback import CheckPoint, EarlyStopping
 from utils.plots import plot_results
+from quantization.quantization import load_model, quantization_serving
+from quantization.utils import print_latency
 
 
 def test(
     test_loader,
-    device: str,
+    device,
     model: nn.Module,
     project_name: str,
 ):
@@ -53,8 +45,8 @@ def get_args_parser():
                         help='data directory for training')
     parser.add_argument('--subset', type=str, default='valid',
                         help='dataset subset')
-    parser.add_argument('--model', type=str, required=True,
-                        help='model name consisting of mobilenet, shufflenet, mnasnet and efficientnet')
+    parser.add_argument('--model_name', type=str, required=True,
+                        help='model name consisting of mobilenet, shufflenet, efficientnet, resnet18 and resnet50')
     parser.add_argument('--weight', type=str, required=True,
                         help='load trained model')
     parser.add_argument('--img_size', type=int, default=224,
@@ -63,10 +55,14 @@ def get_args_parser():
                         help='number of workers in cpu')
     parser.add_argument('--batch_size', default=32, type=int,
                         help='batch Size for training model')
-    parser.add_argument('--num_classes', type=int, default=100,
+    parser.add_argument('--num_classes', type=int, default=33,
                         help='class number of dataset')
     parser.add_argument('--project_name', type=str, default='prj',
                         help='create new folder named project name')
+    parser.add_argument('--quantization', store='action_treu',
+                        help='evaluate the performance of quantized model')
+    parser.add_argument('--measure_latency', store='action_true',
+                        help='measure latency time')
     return parser
 
 
@@ -84,32 +80,30 @@ def main(args):
         shuffle=False,
     )
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    if args.model == 'mobilenet':
-        from models.mobilenet import MobileNetV3
-        model = MobileNetV3(num_classes=args.num_classes, pre_trained=False)
-
-    elif args.model == 'shufflenet':
-        from models.shufflenet import ShuffleNetV2
-        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=False)
-
-    elif args.model == 'efficientnet':
-        from models.efficientnet import EfficientNetV2
-        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=False)
-
-    elif args.model == 'mnasnet':
-        from models.mnasnet import MNASNet
-        model = MNASNet(num_classes=args.num_classes, pre_trained=False)
-
+    # setting device
+    if args.quantization:
+        device = torch.device('cpu')
     else:
-        raise ValueError(f'{args.model} does not exists')
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model.load_state_dict(torch.load(args.weight))
+    # set model
+    if args.quantization:
+        model = quantization_serving(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
+    else:
+        model = load_model(model_name=args.model_name, num_classes=args.num_classes, quantization=False)
+        model.load_state_dict(torch.load(args.weight))
+
     model = model.to(device)
 
-    test(test_loader, device=device, model=model, project_name=args.project_name)
-    
+    if args.measure_latency:
+        print_latency(
+            test(test_loader, device=device, model=model, project_name=args.project_name),
+            req_return=False,
+        )
+
+    else:
+        test(test_loader, device=device, model=model, project_name=args.project_name)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Model testing', parents=[get_args_parser()])
