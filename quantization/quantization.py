@@ -29,6 +29,13 @@ def load_model(model_name, weight, num_classes):
     return model
 
 
+def prepare_quantization(model):
+    model.eval()
+    model = model.cpu()
+    model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
+    return torch.quantization.prepare(model)
+
+
 def model_quantization(model):
     model.eval()
     model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
