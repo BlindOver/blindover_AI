@@ -62,7 +62,7 @@ def train_on_batch(
         batch_loss += loss.item()
         batch_acc += acc.item()
 
-    return batch_loss/(batch+1), batch_acc/(batch+1)
+    return model, batch_loss/(batch+1), batch_acc/(batch+1)
     
 @torch.no_grad()
 def valid_on_batch(
@@ -91,7 +91,7 @@ def valid_on_batch(
         batch_loss += loss.item()
         batch_acc += acc.item()
 
-    return batch_loss/(batch+1), batch_acc/(batch+1)
+    return model, batch_loss/(batch+1), batch_acc/(batch+1)
 
 
 def training(
@@ -178,8 +178,11 @@ def training(
     for epoch in pbar:
         epoch_time = time.time()
 
+        if next(model.parameters()).device != torch.device('cuda'):
+            model = model.to(device)
+
         ##################### training #####################
-        train_loss, train_acc = train_on_batch(
+        model, train_loss, train_acc = train_on_batch(
             model=model,
             train_loader=train_loader,
             device=device,
@@ -192,7 +195,7 @@ def training(
         ####################################################
 
         #################### validating ####################
-        valid_loss, valid_acc = valid_on_batch(
+        model, valid_loss, valid_acc = valid_on_batch(
             model=model,
             valid_loader=valid_loader,
             loss_func=loss_func,
@@ -225,15 +228,14 @@ def training(
             path = './runs/train/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
             best_path = f'./runs/train/{project_name}/weights/best.pt'
             if quantization:
-                cp(valid_loss, model_quantization(model), path)
-            else:
-                cp(valid_loss, model, path)
+                model = model_quantization(model)
+            cp(valid_loss, model, path)
 
         if early_stop:
             if quantization:
-                es(valid_loss, model_quantization(model))
-            else:
-                es(valid_loss, model)
+                model = model_quantization(model)
+                
+            es(valid_loss, model)
             if es.early_stop:
                 print('\n##########################\n'
                       '##### Early Stopping #####\n'
