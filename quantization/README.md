@@ -1,13 +1,13 @@
 # Quantize the weights of model to achieve faster inference speed
 
-- Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [ResNet50 and ResNet18](https://arxiv.org/abs/1512.03385)
+- Models: ShuffleNetV2, MobileNetV3, EfficientNetV2, ResNet18 and ResNet50
 - Comparison size of models (KB):
 
-|                  | ShuffleNetV2 (x0.5) | MobileNetV3 (large) | ResNet18 | ResNet50 |
-| :--------------: | :-----------------: | :-----------------: | :------: | :-------: |
-|   Normal Model   |       5591.39       |      22120.23      | 46827.87 | 102522.81 |
-| Quantized Model |       1560.61       |       5628.04       | 11833.70 | 26150.91 |
-| shrinkage factor |        3.58        |        3.93        |   3.96   |   3.92   |
+|                  | ShuffleNetV2 (x0.5) | MobileNetV3 (large) | EfficientNetV2 | ResNet18 | ResNet50 |
+| :--------------: | :-----------------: | :-----------------: | :------: | :------: | :-------: |
+|   Normal Model   |       1629.99      |      6325.56      | 81722.74 | 44843.61 |94597.31 |
+| Quantized Model |       684.15       |       1954.27       | 23666.48 | 11402.92 | 24540.52 |
+| shrinkage factor |        2.38      |        3.24       |   3.45   |   3.93   | 3.85|
 
 ### References
 
