@@ -12,9 +12,9 @@ def load_model(model_name, weight, num_classes):
         from ..models.mobilenet import MobileNetV3
         model = MobileNetV3(num_classes=num_classes, pre_trained=False)
 
-    elif model_name == 'mnasnet':
-        from ..models.mnasnet import MNASNet
-        model = MNASNet(num_classes=num_classes, pre_trained=False)
+    elif model_name == 'resnet18':
+        from ..models.resnet import ResNet18
+        model = ResNet18(num_classes=num_classes, pre_trained=False)
     
     elif model_name == 'efficientnet':
         from ..models.efficientnet import EfficientNetV2
