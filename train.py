@@ -119,7 +119,7 @@ def training(
         f'{optimizer_name} does not exists.'
 
     if quantization:
-        from quantization.quantization import prepare_quantization
+        from quantization.quantization import prepare_quantization, model_quantization
         project_name += '_quantization'
         model = prepare_quantization(model)
 
@@ -224,10 +224,14 @@ def training(
         if check_point:
             path = './runs/train/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
             best_path = f'./runs/train/{project_name}/weights/best.pt'
+            if quantization:
+                model = model_quantization(model)
             cp(valid_loss, model, path)
-            cp(valid_loss, model, best_path, save_best=True)
 
         if early_stop:
+            if quantization:
+                model = model_quantization(model)
+
             es(valid_loss, model)
             if es.early_stop:
                 print('\n##########################\n'
