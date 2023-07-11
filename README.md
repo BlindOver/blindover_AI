@@ -1,11 +1,11 @@
 # Build Deep Learning Model for blind individuals
 
-- Models: [ShuffleNetV2](https://arxiv.org/abs/1807.11164), [MobileNetV3](https://arxiv.org/abs/1905.02244), [MNASNet](https://arxiv.org/abs/1807.11626), [EfficientNetV2](https://arxiv.org/abs/2104.00298)
+- Models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
 - Number of Parameters (based on 33 classes):
 
-| ShuffleNetV2 (x0.5) | MobileNetV3 (small) | EfficientNetV2 | ResNet18 | ResNet50 |
-| :------------------: | :-----------------: | :------------: | :------: | :------: |
-|       375,617       |      1,551,681      |  20,219,761   |  11,193,441  |  23,575,649  |
+| ShuffleNetV2 (x0.5) | MobileNetV3 (small) | EfficientNetV2 |  ResNet18  |  ResNet50  |
+| :-----------------: | :-----------------: | :------------: |  :------:  |  :------:  |
+|       375,617       |      1,551,681      |   20,219,761   | 11,193,441 | 23,575,649 |
 
 ### Training and Testing
 
@@ -18,10 +18,16 @@ cd ./blindover_AI
 pip install -r requirements.txt
 ```
 
+**Plattform**
+- RTX 3090 GPU
+- CUDA 11.7
+- CUDNN 8.5
+- PyTorch 1.13
+
 **Training**
 
 ```
-python3 train.py --data_path '{dataset directory}' --name 'exp' --model '{the one of 4 models}' --pretrained --img_size 224 --num_workers 8 --batch_size 32 --epochs 100 --optimizer 'momentum' --lr_scheduling --check_point
+python3 train.py --data_path {dataset directory} --name exp --model {the one of 5 models} --pretrained --img_size 224 --num_workers 8 --batch_size 8 --epochs 100 --optimizer adam --lr_scheduling --check_point
 ```
 
 **Testing**
@@ -40,7 +46,7 @@ python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}
 
 **Features**
 
-- To avoid image distortion, we apply **padding** and resize processing. ([code](https://github.com/BlindOver/blindover_AI/blob/d414b5aad9844feda26e95afc6f0b44c5247378f/utils/dataset.py#L32))
+- To avoid image distortion, we apply **padding** and resize processing. ([`code`](https://github.com/BlindOver/blindover_AI/blob/d414b5aad9844feda26e95afc6f0b44c5247378f/utils/dataset.py#L32))
 
   ```python
   from utils.dataset import Padding
@@ -49,8 +55,8 @@ python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}
   img = Image.open('image.png')
   padded_img = Padding()(img)
   ```
-- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet compare their accuracy and inference speed. ([code](https://github.com/BlindOver/blindover_AI/tree/main/models))
-- **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([codes](https://github.com/Sangh0/blindover_AI/tree/main/quantization/quantization.py))
+- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet compare their accuracy and inference speed. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models))
+- **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([`code`](https://github.com/Sangh0/blindover_AI/tree/main/quantization/quantization.py))
 
   ```python
   from quantization.quantization import quantization_serving
@@ -58,7 +64,7 @@ python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}
   quantized_weight = './quantized_weight.pt'
   quantized_model = quantization_serving('shufflenet', quantized_weight, num_classes=33)
   ```
-- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([code](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
+- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
   ```
   python ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
@@ -135,4 +141,4 @@ path : dataset/
 
 ### Acknowledgements
 
-- assisted in dataset collection (데이터셋 수집에 도움 주신 분들): [이마트24 용인 명지대점](https://map.naver.com/v5/search/%EC%9D%B4%EB%A7%88%ED%8A%B824%20%EC%9A%A9%EC%9D%B8%20%EB%AA%85%EC%A7%80%EB%8C%80%EC%A0%90/place/1019132650?c=15,0,0,2,dh&isCorrectAnswer=true), [하나로마트 오산농협본점](https://map.naver.com/v5/search/%EC%98%A4%EC%82%B0%20%EB%86%8D%ED%98%91%20%ED%95%98%EB%82%98%EB%A1%9C%EB%A7%88%ED%8A%B8%20%EB%B3%B8%EC%A0%90/place/13373937?c=15,0,0,2,dh&placePath=%3Fentry%253Dpll)
+- Assisted in Dataset Collection (데이터셋 수집에 도움 주신 분들): [이마트24 용인 명지대점](https://map.naver.com/v5/search/%EC%9D%B4%EB%A7%88%ED%8A%B824%20%EC%9A%A9%EC%9D%B8%20%EB%AA%85%EC%A7%80%EB%8C%80%EC%A0%90/place/1019132650?c=15,0,0,2,dh&isCorrectAnswer=true), [하나로마트 오산농협본점](https://map.naver.com/v5/search/%EC%98%A4%EC%82%B0%20%EB%86%8D%ED%98%91%20%ED%95%98%EB%82%98%EB%A1%9C%EB%A7%88%ED%8A%B8%20%EB%B3%B8%EC%A0%90/place/13373937?c=15,0,0,2,dh&placePath=%3Fentry%253Dpll)
