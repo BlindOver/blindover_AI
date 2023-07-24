@@ -4,6 +4,7 @@ import time
 from typing import *
 
 import torch
+import torch.nn as nn
 
 from utils.dataset import load_dataloader
 from utils.plots import plot_results
