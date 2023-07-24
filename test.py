@@ -9,7 +9,6 @@ import torch.nn as nn
 from utils.dataset import load_dataloader
 from utils.plots import plot_results
 from quantization.quantization import load_model, quantization_serving
-from quantization.utils import print_latency
 
 
 def test(
@@ -21,6 +20,7 @@ def test(
     image_list, label_list, output_list = [], [], []
     
     model.eval()
+    start = time.time()
     with torch.no_grad():
         batch_acc = 0
         for batch, (images, labels) in enumerate(test_loader):
@@ -35,9 +35,11 @@ def test(
             acc = (output_index == labels).sum() / (len(outputs))
 
             batch_acc += acc.item()
-    
+
+    end = time.time()
     plot_results(image_list, label_list, output_list, project_name)
     print(f'{"="*20} Test Results: Accuracy {acc*100:.2f} {"="*20}')
+    print(f'time: {end-start:.3f}')
 
 
 def get_args_parser():
@@ -60,9 +62,9 @@ def get_args_parser():
                         help='class number of dataset')
     parser.add_argument('--project_name', type=str, default='prj',
                         help='create new folder named project name')
-    parser.add_argument('--quantization', store='action_true',
+    parser.add_argument('--quantization', action='store_true',
                         help='evaluate the performance of quantized model')
-    parser.add_argument('--measure_latency', store='action_true',
+    parser.add_argument('--measure_latency', action='store_true',
                         help='measure latency time')
     return parser
 
@@ -82,10 +84,7 @@ def main(args):
     )
 
     # setting device
-    if args.quantization:
-        device = torch.device('cpu')
-    else:
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cpu')
 
     # set model
     if args.quantization:
