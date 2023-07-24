@@ -35,7 +35,7 @@ def test(
 
             batch_acc += acc.item()
     
-    plt_results(image_list, label_list, output_list, project_name)
+    plot_results(image_list, label_list, output_list, project_name)
     print(f'{"="*20} Test Results: Accuracy {acc*100:.2f} {"="*20}')
 
 
