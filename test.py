@@ -60,7 +60,7 @@ def get_args_parser():
                         help='class number of dataset')
     parser.add_argument('--project_name', type=str, default='prj',
                         help='create new folder named project name')
-    parser.add_argument('--quantization', store='action_treu',
+    parser.add_argument('--quantization', store='action_true',
                         help='evaluate the performance of quantized model')
     parser.add_argument('--measure_latency', store='action_true',
                         help='measure latency time')
