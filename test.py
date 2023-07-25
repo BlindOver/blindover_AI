@@ -8,14 +8,14 @@ import torch.nn as nn
 
 from utils.dataset import load_dataloader
 from utils.plots import plot_results
-from quantization.quantization import load_model, quantization_serving
+from quantization.quantization import load_model, serving_quantization
 
 
 def test(
     test_loader,
     device,
     model: nn.Module,
-    project_name: str,
+    project_name: Optional[str]=None,
 ):
     image_list, label_list, output_list = [], [], []
     
@@ -37,7 +37,8 @@ def test(
             batch_acc += acc.item()
 
     end = time.time()
-    plot_results(image_list, label_list, output_list, project_name)
+    if project_name is not None:
+        plot_results(image_list, label_list, output_list, project_name)
     print(f'{"="*20} Test Results: Accuracy {acc*100:.2f} {"="*20}')
     print(f'time: {end-start:.3f}')
 
@@ -88,21 +89,14 @@ def main(args):
 
     # set model
     if args.quantization:
-        model = quantization_serving(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
+        model = serving_quantization(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
     else:
         model = load_model(model_name=args.model_name, num_classes=args.num_classes, quantization=False)
-        model.load_state_dict(torch.load(args.weight))
+        model.load_state_dict(torch.load(args.weight, map_location=device))
 
     model = model.to(device)
 
-    if args.measure_latency:
-        print_latency(
-            test(test_loader, device=device, model=model, project_name=args.project_name),
-            req_return=False,
-        )
-
-    else:
-        test(test_loader, device=device, model=model, project_name=args.project_name)
+    test(test_loader, device=device, model=model, project_name=args.project_name)
 
 
 if __name__ == '__main__':
