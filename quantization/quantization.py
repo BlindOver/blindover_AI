@@ -44,12 +44,11 @@ def model_quantization(model):
 
 
 # for serving
-def quantization_serving(model_name: str, weight: str, num_classes: int=33):
-    model = load_model(model_name, num_classes, quantization=True)
-    model.eval()
-    model = model.cpu()
-    model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
-    model = torch.quantization.prepare(model)
-    model = torch.quantization.convert(model)
-    model.load_state_dict(torch.load(weight))
-    return model
+def serving_quantization(model_name: str, weight: str, num_classes: int=33):
+    model_fp32 = load_model(model_name, num_classes, quantization=True)
+    model_fp32.load_state_dict(torch.load(weight, map_location=torch.device('cpu')))
+    model_fp32.eval()
+    model_fp32.qconfig = torch.quantization.get_default_qconfig('fbgemm')
+    model_prepared = torch.quantization.prepare(model_fp32)
+    model_quantized = torch.quantization.convert(model_prepared)
+    return model_quantized
