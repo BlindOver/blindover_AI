@@ -12,8 +12,7 @@ from models.efficientnet import EfficientNetV2
 from models.mnasnet import MNASNet
 from models.mobilenet import MobileNetV3
 from models.shufflenet import ShuffleNetV2
-from quantization.quantization import quantization_serving, load_model
-from quantization.utils import print_latency
+from quantization.quantization import serving_quantization, load_model
 
 
 classes = {
@@ -45,7 +44,7 @@ def inference(src: torch.Tensor, model: nn.Module):
     model.eval()
     with torch.no_grad():
         outputs = model(src)
-        prob = F.softmax(outputs)
+        # prob = F.softmax(outputs)
         result = classes[torch.argmax(prob, dim=1).item()]
     return result
 
@@ -69,7 +68,7 @@ def get_args_parser():
 
 def main(args):
     if args.quantized:
-        model = quantization_serving(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
+        model = serving_quantization(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
         
     else:
         model = load_model(args.model_name, num_classes=args.num_classes, quantization=False)
@@ -77,10 +76,7 @@ def main(args):
 
     img, _ = load_image(args.src)
 
-    if args.measure_latency:
-        result = print_latency(inference(img, model), req_return=True)
-    else:
-        result = inference(img, model)
+    result = inference(img, model)
     print(result)
 
 
