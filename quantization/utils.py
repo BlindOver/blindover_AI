@@ -2,7 +2,7 @@ import os
 
 import torch
 
-from quantization import prepare_quantization, converting_quantization
+from quantization import prepare_ptq, converting_quantization
 
 
 # only apply resnet based model
@@ -59,7 +59,7 @@ def comparison_size_of_models(model_name: str, num_classes: int=33):
     else:
         raise ValueError(f'model name {model_name} does not exists.')
     
-    prepared_model = prepare_quantization(float_model)
+    prepared_model = prepare_ptq(float_model)
     quantized_model = converting_quantization(prepared_model)
     
     float_model.eval()
