@@ -29,15 +29,15 @@ def load_model(model_name, num_classes, quantization=True):
 
 
 # for training
-def prepare_quantization(model):
+def prepare_quantization(model, backend: str='x86'):
     model.eval()
     model = model.cpu()
-    model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
-    return torch.quantization.prepare(model)
+    model.qconfig = torch.quantization.get_default_qat_qconfig(backend)
+    return torch.quantization.prepare_qat(model, inplace=False)
 
 
-# for training
-def model_quantization(model):
+# after training
+def converting_quantization(model):
     model.eval()
     model = model.cpu()
     return torch.quantization.convert(model)
