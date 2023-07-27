@@ -180,6 +180,10 @@ class ResNet(nn.Module):
                 f"or a 3-element tuple, got {replace_stride_with_dilation}"
             )
 
+        self.quantize = quantize
+        self.quant = QuantStub()
+        self.dequant = DeQuantStub()
+
         self.groups = groups
         self.base_width = width_per_group
         self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
@@ -192,10 +196,6 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2])
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
-
-        self.quantize = quantize
-        self.quant = QuantStub()
-        self.dequant = DeQuantStub()
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
