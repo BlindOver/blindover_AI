@@ -3,7 +3,7 @@ sys.path.append('/home/hoo7311/anaconda3/envs/yolov7/lib/python3.8/site-packages
 
 import os
 import argparse
-import nump as np
+import numpy as np
 import time
 import logging
 import numpy as np
@@ -345,13 +345,13 @@ def main(args):
         logger.info('model : EfficientNet!')
 
     elif args.model == 'resnet18':
-        from models.resnet import ResNet18
-        model = ResNet18(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
+        from models.resnet import resnet18
+        model = resnet18(num_classes=args.num_classes, quantization=q)
         logger.info('model : ResNet18!')
 
     elif args.model == 'resnet50':
-        from models.resnet import ResNet50
-        model = ResNet50(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
+        from models.resnet import resnet50
+        model = resnet50(num_classes=args.num_classes, quantization=q)
         logger.info('model : ResNet50!')
 
     else:
