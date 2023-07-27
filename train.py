@@ -346,12 +346,12 @@ def main(args):
 
     elif args.model == 'resnet18':
         from models.resnet import resnet18
-        model = resnet18(num_classes=args.num_classes, quantization=q)
+        model = resnet18(num_classes=args.num_classes, quantize=q)
         logger.info('model : ResNet18!')
 
     elif args.model == 'resnet50':
         from models.resnet import resnet50
-        model = resnet50(num_classes=args.num_classes, quantization=q)
+        model = resnet50(num_classes=args.num_classes, quantize=q)
         logger.info('model : ResNet50!')
 
     else:
