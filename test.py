@@ -8,19 +8,22 @@ import torch.nn as nn
 
 from utils.dataset import load_dataloader
 from utils.plots import plot_results
-from quantization.quantization import load_model, serving_quantization
+from quantization.quantization import converting_quantization
 
 
 def test(
     test_loader,
     device,
     model: nn.Module,
-    project_name: Optional[str]=None,
+    project_name: Optional[str] = None,
+    measure_latency: bool=False,
 ):
     image_list, label_list, output_list = [], [], []
     
     model.eval()
-    start = time.time()
+    if measure_latency:
+        start = time.time()
+
     with torch.no_grad():
         batch_acc = 0
         for batch, (images, labels) in enumerate(test_loader):
@@ -36,11 +39,12 @@ def test(
 
             batch_acc += acc.item()
 
-    end = time.time()
     if project_name is not None:
         plot_results(image_list, label_list, output_list, project_name)
     print(f'{"="*20} Test Results: Accuracy {acc*100:.2f} {"="*20}')
-    print(f'time: {end-start:.3f}')
+
+    if measure_latency:
+        print(f'time: {time.time()-start:.3f}')
 
 
 def get_args_parser():
@@ -67,6 +71,8 @@ def get_args_parser():
                         help='evaluate the performance of quantized model')
     parser.add_argument('--measure_latency', action='store_true',
                         help='measure latency time')
+    parser.add_argument('--device', type=str, choices=['cuda', 'cpu'], default='cpu',
+                        help='set device for inference')
     return parser
 
 
@@ -85,18 +91,48 @@ def main(args):
     )
 
     # setting device
-    device = torch.device('cpu')
+    device = torch.device(args.device)
 
-    # set model
-    if args.quantization:
-        model = serving_quantization(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
+    q = args.quantization
+
+    # load model
+    if args.model_name == 'shufflenet':
+        from models.shufflenet import ShuffleNetV2
+        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=False, quantize=q)
+        
+    elif args.model_name == 'mobilenet':
+        from models.mobilenet import MobileNetV3
+        model = MobileNetV3(num_classes=args.num_classes, pre_trained=False)
+
+    elif args.model_name == 'efficientnet':
+        from models.efficientnet import EfficientNetV2
+        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=False)
+
+    elif args.model_name == 'resnet18':
+        from models.resnet import resnet18
+        model = resnet18(num_classes=args.num_classes, quantize=q)
+
+    elif args.model_name == 'resnet50':
+        from models.resnet import resnet50
+        model = resnet50(num_classes=args.num_classes, quantize=q)
+
     else:
-        model = load_model(model_name=args.model_name, num_classes=args.num_classes, quantization=False)
-        model.load_state_dict(torch.load(args.weight, map_location=device))
+        raise ValueError(f'model name {args.model_name} does not exists.')
+
+    model.load_state_dict(torch.load(args.weight, map_location=device))
+
+    if q:
+        model = converting_quantization(model)
 
     model = model.to(device)
 
-    test(test_loader, device=device, model=model, project_name=args.project_name)
+    test(
+        test_loader,
+        device=device,
+        model=model,
+        project_name=args.project_name,
+        measure_latency=args.measure_latency,
+    )
 
 
 if __name__ == '__main__':
