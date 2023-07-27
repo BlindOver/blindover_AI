@@ -1,7 +1,6 @@
 import torch 
 import torch.nn as nn
-import torchvision.models as models
-from torch.quantization import QuantStub, DeQuantStub
+from torchvision.models import efficientnet_v2_s, EfficientNet_V2_S_Weights
 
 # the number of trainable parameters: 20.3 M
 
@@ -10,10 +9,9 @@ class EfficientNetV2(nn.Module):
         self,
         num_classes=100,
         pre_trained=False,
-        quantization=False,
     ):
         super(EfficientNetV2, self).__init__()
-        model = models.efficientnet_v2_s(pretrained=pre_trained)
+        model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.IMAGENET1K_V1)
         self.features = model.features
         self.avgpool = model.avgpool
         
@@ -23,18 +21,9 @@ class EfficientNetV2(nn.Module):
             nn.Linear(hidden_dim, num_classes),
         )
 
-        self.q = quantization
-        if quantization:
-            self.quant = QuantStub()
-            self.dequant = DeQuantStub()
-
     def forward(self, x):
-        if self.q:
-            x = self.quant(x)
         x = self.features(x)
         x = self.avgpool(x)
         x = x.view(x.size()[0], -1)
         x = self.classifier(x)
-        if self.q:
-            x = self.dequant(x)
         return x
