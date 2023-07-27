@@ -3,6 +3,7 @@ sys.path.append('/home/hoo7311/anaconda3/envs/yolov7/lib/python3.8/site-packages
 
 import os
 import argparse
+import nump as np
 import time
 import logging
 import numpy as np
@@ -119,7 +120,7 @@ def training(
         f'{optimizer_name} does not exists.'
 
     if quantization:
-        from quantization.quantization import prepare_quantization, model_quantization
+        from quantization.quantization import prepare_quantization, converting_quantization
         project_name += '_quantization'
         model = prepare_quantization(model)
 
@@ -178,9 +179,6 @@ def training(
     for epoch in pbar:
         epoch_time = time.time()
 
-        if next(model.parameters()).device != torch.device('cuda'):
-            model = model.to(device)
-
         ##################### training #####################
         model, train_loss, train_acc = train_on_batch(
             model=model,
@@ -226,18 +224,10 @@ def training(
 
         if check_point:
             path = './runs/train/{}/weights/check_point_{:03d}.pt'.format(project_name, epoch)
-            best_path = f'./runs/train/{project_name}/weights/best.pt'
-            if quantization:
-                cp(valid_loss, model_quantization(model), path)
-            else:
-                cp(valid_loss, model, path)
+            cp(valid_loss, model, path)
 
         if early_stop:
-            if quantization:
-                es(valid_loss, model_quantization(model))
-            else:
-                es(valid_loss, model)
-                
+            es(valid_loss, model)    
             if es.early_stop:
                 print('\n##########################\n'
                       '##### Early Stopping #####\n'
@@ -335,12 +325,13 @@ def main(args):
         num_workers=args.num_workers,
         batch_size=args.batch_size,
     )
-    
+
+    # quantization: only shufflenet and resnet    
     q = True if args.quantization else False
 
     if args.model == 'mobilenet':
         from models.mobilenet import MobileNetV3
-        model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
+        model = MobileNetV3(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : MobileNet!')
 
     elif args.model == 'shufflenet':
@@ -350,7 +341,7 @@ def main(args):
 
     elif args.model == 'efficientnet':
         from models.efficientnet import EfficientNetV2
-        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
+        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=args.pretrained)
         logger.info('model : EfficientNet!')
 
     elif args.model == 'resnet18':
@@ -367,8 +358,6 @@ def main(args):
         raise ValueError(f'{args.model} does not exists')
 
     summary(model, (3, args.img_size, args.img_size), device='cpu')
-
-    
 
     history = training(
         model=model,
