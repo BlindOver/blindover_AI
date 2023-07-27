@@ -186,10 +186,10 @@ class ResNet(nn.Module):
         self.bn1 = norm_layer(self.inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1 = self._make_layer(block, 64, layers[0], quantize=quantize)
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0], quantize=quantize)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1], quantize=quantize)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2], quantize=quantize)
+        self.layer1 = self._make_layer(block, 64, layers[0])
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0])
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1])
+        self.layer4 = self._make_layer(block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2])
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
@@ -218,7 +218,6 @@ class ResNet(nn.Module):
         blocks: int,
         stride: int=1,
         dilate: bool=False,
-        quantize: bool=False
     ) -> nn.Sequential:
         norm_layer = self._norm_layer
         downsample = None
@@ -236,7 +235,7 @@ class ResNet(nn.Module):
         layers.append(
             block(
                 self.inplanes, planes, stride, downsample, self.groups,
-                self.base_width, previous_dilation, norm_layer, quantize,
+                self.base_width, previous_dilation, norm_layer, self.quantize,
             )
         )
         self.inplanes = planes * block.expansion
@@ -249,6 +248,7 @@ class ResNet(nn.Module):
                     base_width=self.base_width,
                     dilation=self.dilation,
                     norm_layer=norm_layer,
+                    quantize=self.quantize,
                 )
             )
 
