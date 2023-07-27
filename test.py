@@ -93,13 +93,13 @@ def main(args):
     # setting device
     device = torch.device(args.device)
 
-    q = args.quantization
+    q = True if args.quantization else False
 
     # load model
     if args.model_name == 'shufflenet':
         from models.shufflenet import ShuffleNetV2
         model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=False, quantize=q)
-        
+
     elif args.model_name == 'mobilenet':
         from models.mobilenet import MobileNetV3
         model = MobileNetV3(num_classes=args.num_classes, pre_trained=False)
@@ -122,6 +122,10 @@ def main(args):
     model.load_state_dict(torch.load(args.weight, map_location=device))
 
     if q:
+        if args.model_name == 'resnet18' or 'resnet50':
+            from quantization.utils import fuse_modules
+            model = fuse_modules(model)
+
         model = converting_quantization(model)
 
     model = model.to(device)
