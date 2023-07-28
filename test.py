@@ -1,6 +1,7 @@
 import os
 import argparse
 import time
+from tqdm.auto import tqdm
 from typing import *
 
 import torch
@@ -26,7 +27,7 @@ def test(
 
     with torch.no_grad():
         batch_acc = 0
-        for batch, (images, labels) in enumerate(test_loader):
+        for batch, (images, labels) in tqdm(enumerate(test_loader), total=len(test_loader)):
             image_list.append(images)
             label_list.append(labels)
             images = images.to(device)
@@ -35,7 +36,7 @@ def test(
             outputs = model(images)
             output_index = torch.argmax(outputs, dim=1)
             output_list.append(output_index.cpu())
-            acc = (output_index == labels).sum() / (len(outputs))
+            acc = (output_index == labels).sum() / len(outputs)
 
             batch_acc += acc.item()
 
