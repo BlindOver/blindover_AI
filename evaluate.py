@@ -145,7 +145,7 @@ def main(args):
         model = qat_serving(model=model, weight=args.weight)
 
     else: # 'none'
-        pass
+        model.load_state_dict(torch.load(args.weight))
 
     test(
         test_loader,
