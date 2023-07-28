@@ -9,10 +9,10 @@ import torchvision.transforms as transforms
 
 from utils.dataset import Padding
 from models.efficientnet import EfficientNetV2
-from models.mnasnet import MNASNet
 from models.mobilenet import MobileNetV3
 from models.shufflenet import ShuffleNetV2
-from quantization.quantization import serving_quantization, load_model
+from models.resnet import resnet18, resnet50
+from quantization.quantization import ptq_serving, qat_serving
 
 
 classes = {
@@ -44,8 +44,8 @@ def inference(src: torch.Tensor, model: nn.Module):
     model.eval()
     with torch.no_grad():
         outputs = model(src)
-        # prob = F.softmax(outputs)
-        result = classes[torch.argmax(prob, dim=1).item()]
+        # outputs = F.softmax(outputs)
+        result = classes[torch.argmax(outputs, dim=1).item()]
     return result
 
 
@@ -57,8 +57,8 @@ def get_args_parser():
                         help='input image')
     parser.add_argument('--weight', type=str, required=True,
                         help='a path of trained weight file')
-    parser.add_argument('--quantized', action='store_true',
-                        help='load quantized model')
+    parser.add_argument('--quantization', type=str, default='none', choices=['none', 'qat', 'ptq'],
+                        help='load quantized model or float32 model')
     parser.add_argument('--measure_latency', action='store_true',
                         help='print latency time')
     parser.add_argument('--num_classes', type=int, default=33,
@@ -67,15 +67,44 @@ def get_args_parser():
 
 
 def main(args):
-    if args.quantized:
-        model = serving_quantization(model_name=args.model_name, weight=args.weight, num_classes=args.num_classes)
-        
+    q = True if args.quantization is not 'none' else False
+
+    # load model
+    if args.model_name == 'shufflenet':
+        from models.shufflenet import ShuffleNetV2
+        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=False, quantize=q)
+
+    elif args.model_name == 'mobilenet':
+        from models.mobilenet import MobileNetV3
+        model = MobileNetV3(num_classes=args.num_classes, pre_trained=False)
+
+    elif args.model_name == 'efficientnet':
+        from models.efficientnet import EfficientNetV2
+        model = EfficientNetV2(num_classes=args.num_classes, pre_trained=False)
+
+    elif args.model_name == 'resnet18':
+        from models.resnet import resnet18
+        model = resnet18(num_classes=args.num_classes, pre_trained=False, quantize=q)
+
+    elif args.model_name == 'resnet50':
+        from models.resnet import resnet50
+        model = resnet50(num_classes=args.num_classes, pre_trained=False, quantize=q)
+
     else:
-        model = load_model(args.model_name, num_classes=args.num_classes, quantization=False)
-        model.load_state_dict(torch.load(args.weight))
+        raise ValueError(f'model name {args.model_name} does not exists.')
+    
+    
+    # quantization
+    if args.quantization == 'ptq':
+        model = ptq_serving(model=model, weight=args.weight)
+
+    elif args.quantization == 'qat':
+        model = qat_serving(model=model, weight=args.weight)
+
+    else: # 'none'
+        pass
 
     img, _ = load_image(args.src)
-
     result = inference(img, model)
     print(result)
 
