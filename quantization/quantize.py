@@ -68,6 +68,8 @@ def calibration_for_quantization(
         for image, _ in tqdm(data_loader, total=len(data_loader)):
             image = image.to(device)
             _ = model(image)
+    
+    return model
 
 
 # only apply resnet based model

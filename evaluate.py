@@ -12,7 +12,7 @@ import torch.nn as nn
 
 from utils.dataset import load_dataloader
 from utils.plots import plot_results
-from quantization.quantization import (
+from quantization.quantize import (
     converting_quantization, 
     ptq_serving, qat_serving, 
     fuse_modules, 
