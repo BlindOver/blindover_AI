@@ -31,7 +31,7 @@ def converting_quantization(model: nn.Module):
 
 # for serving of ptq model
 def ptq_serving(
-    model: nn.Module, str,
+    model: nn.Module,
     weight: str, # the path of weight file
     backend: str='x86',
 ):
