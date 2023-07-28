@@ -21,9 +21,11 @@ def calibration_for_quantization(
 
 
 # only apply resnet based model
-def fuse_modules(model: nn.Module):
+def fuse_modules(model: nn.Module, mode: str='eval'):
+    assert mode in ('eval', 'train')
     model = model.cpu()
-    model.eval()
+    model.eval() if mode == 'eval' else model.train()
+
     modules = [
         ['conv1', 'bn1'],
         ['layer1.0.conv1', 'layer1.0.bn1'],
@@ -47,7 +49,13 @@ def fuse_modules(model: nn.Module):
         ['layer4.1.conv2', 'layer4.1.bn2'],
     ]
 
-    return torch.quantization.fuse_modules(model, modules)
+    try: # resnet based-model
+        model = torch.quantization.fuse_modules(model, modules)
+    
+    except: # shufflenet
+        pass
+
+    return model
 
 
 def print_size_of_model(model, label=''):
@@ -60,15 +68,15 @@ def print_size_of_model(model, label=''):
 
 def comparison_size_of_models(model_name: str, num_classes: int=33):
     if model_name == 'shufflenet':
-        from models.shufflenet import ShuffleNetV2
+        from ..models.shufflenet import ShuffleNetV2
         float_model = ShuffleNetV2(num_classes=33, pre_trained=False, quantize=True)
         
     elif model_name == 'resnet18':
-        from models.resnet import resnet18
+        from ..models.resnet import resnet18
         float_model = resnet18(num_classes=33, quantize=True)
         
     elif model_name == 'resnet50':
-        from models.resnet import resnet50
+        from ..models.resnet import resnet50
         float_model = resnet50(num_classes=33, quantize=True)
 
     else:
