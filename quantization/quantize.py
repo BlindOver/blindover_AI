@@ -52,8 +52,8 @@ def qat_serving(
 
     model = fuse_modules(model, mode='train')
     model = prepare_qat(model, backend)
-    model = converting_quantization(model)
     model.load_state_dict(torch.load(weight, map_location=torch.device('cpu')))
+    model = converting_quantization(model)
     return model
 
 
