@@ -1,22 +1,22 @@
 # Quantize the weights of model to achieve faster inference speed
 
-- Models: ShuffleNetV2, MobileNetV3, EfficientNetV2, ResNet18 and ResNet50
+- Models: ShuffleNetV2, ResNet18 and ResNet50
 - Comparison size of models (KB):
 
-|                  | ShuffleNetV2 (x0.5) | MobileNetV3 (large) | EfficientNetV2 | ResNet18 | ResNet50 |
-| :--------------: | :-----------------: | :-----------------: | :------: | :------: | :-------: |
-|   Normal Model   |       1629.99      |      6325.56      | 81722.74 | 44843.61 |94597.31 |
-| Quantized Model |       684.15       |       1954.27       | 23666.48 | 11402.92 | 24540.52 |
-| shrinkage factor |        2.38      |        3.24       |   3.45   |   3.93   | 3.85|
-
+|                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 |
+| :--------------: | :-----------------: | :------: | :------: |
+|   Normal Model   |       1629.99       | 44843.61 | 94597.31 |
+| Quantized Model |       684.15       | 11402.92 | 24540.52 |
+| shrinkage factor |        2.38        |   3.93   |   3.85   |
 
 ### Process Guide for Quantization
+
 - Explanation step by step with simple example codes
 
 <details><summary> <b>First Method: PTQ (Post Training Quantization)</b> </summary>
 
 ```
-step 1. Load a model that include QuantStub() and DeQuantStub() from torch.quantization
+step 1. Loading a model that include QuantStub() and DeQuantStub() from torch.quantization
 ```
 
 ```python
@@ -41,9 +41,9 @@ model = Model()
 ```
 step 2. Training model or loading pre-trained weight
 ```
-    
+
 ```python
-# training
+# training model
 training(model, train_loader)
 
 # OR loading pre-trained weight
@@ -53,7 +53,7 @@ model.load_state_dict(torch.load('pretrained_weight.pt'))
 ```
 step 3. Fusing modules such as nn.Conv2d and nn.BatchNorm2d
 ```
-    
+
 ```python
 import torch
 
@@ -68,7 +68,7 @@ def fuse_modules(model):
 
 fused_model = fuse_modules(model)
 ```
-    
+
 ```
 step 4. Preparing quantization for quantizable model with float32 bit
 ```
@@ -118,6 +118,7 @@ def converting(model):
 quantized_model = converting(prepared_model)
 torch.save(quantized_model, './weights/quantized_weight.pt')
 ```
+
 </details>
 
 <details><summary> <b>Second Method: QAT (Quantization Aware Training)</b> </summary>
@@ -163,7 +164,7 @@ import torch
 
 def fuse_modules(model):
     model = model.cpu()
-    model.eval()
+
     modules = [
         ['conv1', 'bn1'],
     ]
@@ -194,8 +195,6 @@ step 5. Training model on GPU device (QAT step)
 ```
 
 ```python
-import torch
-
 training(model, train_loader, device=torch.device('cuda'))
 
 ```
@@ -215,8 +214,8 @@ def converting(model):
 quantized_model = converting(model)
 torch.save(quantized_model, './weights/quantized_weight.pt')
 ```
-</details>
 
+</details>
 
 ### References
 
