@@ -1,12 +1,27 @@
 import os
+from tqdm.auto import tqdm
 
 import torch
+import torch.nn as nn
 
-from quantization import prepare_ptq, converting_quantization
+from .quantization import prepare_ptq, converting_quantization
+
+
+def calibration_for_quantization(
+    model,
+    data_loader,
+    device=torch.device('cpu'),
+):
+    model.eval()
+    model = model.to(device)
+    with torch.no_grad():
+        for image, _ in tqdm(data_loader, total=len(data_loader)):
+            image = image.to(device)
+            _ = model(image)
 
 
 # only apply resnet based model
-def fuse_modules(model):
+def fuse_modules(model: nn.Module):
     model = model.cpu()
     model.eval()
     modules = [
