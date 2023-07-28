@@ -13,30 +13,35 @@
 ### Process Guide for Quantization
 - Explanation step by step with simple example codes
 
-- first method: PTQ (Post Training Quantization)
-    ```
-    step 1. Load a model that include QuantStub() and DeQuantStub() from torch.quantization
-    ```
-    ```python
-    import torch.nn as nn
-    from torch.quantization import QuantStub, DeQuantStub
+<details><summary> <b>First Method: PTQ (Post Training Quantization)</b> </summary>
+```
+```
+step 1. Load a model that include QuantStub() and DeQuantStub() from torch.quantization
+```
 
-    class Model(nn.Module):
-        def __init__(self, model):
-            self.model = model
-            self.quant = QuantStub()
-            self.dequant = DeQuantStub()
+```python
+import torch.nn as nn
+from torch.quantization import QuantStub, DeQuantStub
 
-        def forward(self, x):
-            x = self.quant(x)
-            x = self.model(x)
-            x = self.dequant(x)
-            return x
-    ```
-    
-    ```
-    step 2. Training model or loading pre-trained weight
-    ```
+class Model(nn.Module):
+    def __init__(self, model):
+        self.model = model
+        self.quant = QuantStub()
+        self.dequant = DeQuantStub()
+
+    def forward(self, x):
+        x = self.quant(x)
+        x = self.model(x)
+        x = self.dequant(x)
+        return x
+
+model = Model()
+```
+```
+
+```
+step 2. Training model or loading pre-trained weight
+```
     
     ```python
     # training
@@ -113,9 +118,74 @@
 
     quantized_model = converting(prepared_model)
     ```
+</details>
+
+- Second Method: QAT (Quantization Aware Training)
+    ```
+    step 1. Building float32 model or loading pre-trained weight (This step is the same as the step 1 of the above first method (PTQ))
+    ```
+
+    ```
+    step 2. Setting training model for model and assigning to cpu device
+    ```
+
+    ```python
+    model.train()
+    model = model.cpu()
+    ```
+
+    ```
+    step 3. Fusing modules of model (This step is the same as the step 3 of the above first method (PTQ))
+    ```
+
+    ```
+    step 4. Setting qconfig and preparing quantization
+    ```
+
+    ```python
+    import torch
+
+    def prepare_qat(model, backend: str='x86'):
+        model.train()
+        model = model.cpu()
+        model.qconfig = torch.quantization.get_default_qat_qconfig(backend)
+        return torch.quantization.prepare_qat(model)
+
+    prepared_model = prepare_qat(fused_model)
+    ```
+
+    ```
+    step 5. Training model on GPU device (QAT step)
+    ```
+
+    ```python
+    training(model, train_loader, device=torch.device('cuda'))
+    ```
+step 7. set evaluation mode for model and assign to cpu device and run testing
 
 
 ### References
 
 - [PyTorch document](https://pytorch.org/docs/stable/quantization.html)
 - [My Repository](https://github.com/Sangh0/Quantization)
+
+## Installation
+
+Docker environment (recommended)
+<details><summary> <b>Expand</b> </summary>
+
+``` shell
+# create the docker container, you can change the share memory size if you have more.
+nvidia-docker run --name yolov7 -it -v your_coco_path/:/coco/ -v your_code_path/:/yolov7 --shm-size=64g nvcr.io/nvidia/pytorch:21.08-py3
+
+# apt install required packages
+apt update
+apt install -y zip htop screen libgl1-mesa-glx
+
+# pip install required packages
+pip install seaborn thop
+
+# go to code folder
+cd /yolov7
+```
+
