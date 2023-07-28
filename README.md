@@ -52,23 +52,19 @@ python3 test.py --data_path '{dataset directory}' --model '{the one of 4 models}
   from utils.dataset import Padding
   from PIL import Image
 
-  img = Image.open('image.png')
+  img = Image.open('./image.png')
   padded_img = Padding()(img)
   ```
+
 - To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet compare their accuracy and inference speed. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models))
-- **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([`code`](https://github.com/Sangh0/blindover_AI/tree/main/quantization/quantization.py))
 
-  ```python
-  from quantization.quantization import quantization_serving
+- **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md))
 
-  quantized_weight = './quantized_weight.pt'
-  quantized_model = quantization_serving('shufflenet', quantized_weight, num_classes=33)
-  ```
 - To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
-  ```
-  python ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
-  ```
+    ```
+    python ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
+    ```
 
 ### Dataset
 
