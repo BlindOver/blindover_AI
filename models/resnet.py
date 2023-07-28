@@ -2,9 +2,9 @@ from typing import *
 
 import torch 
 import torch.nn as nn
+import torchvision.models as models
 from torch.quantization import QuantStub, DeQuantStub
 
-# the number of trainable parameters: 11.19 M (ResNet18)
 
 def conv3x3(
     in_planes: int, out_planes: int, 
@@ -281,19 +281,37 @@ class ResNet(nn.Module):
         return self._forward_impl(x)
 
 
-def resnet18(num_classes: int=33, quantize: bool=False) -> ResNet:
-    return ResNet(
+# the number of trainable parameters: 11.19M (ResNet18)
+
+def resnet18(num_classes: int=33, pretrained: bool=True, quantize: bool=False) -> ResNet:
+    resnet18 = ResNet(
         block=BasicBlock, 
         layers=[2, 2, 2, 2], 
-        num_classes=num_classes,
+        num_classes=1000 if pretrained else num_classes,
         quantize=quantize,
     )
 
+    if pretrained:
+        pretrained_model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
+        resnet18.load_state_dict(pretrained_model.state_dict())
+        resnet18.fc = nn.Linear(resnet18.fc.in_features, num_classes, bias=True)
+        
+    return resnet18
 
-def resnet50(num_classes: int=33, quantize: bool=False) -> ResNet:
-    return ResNet(
+
+# the number of trainable parameters: 23.57M (ResNet50)
+
+def resnet50(num_classes: int=33, pretrained: bool=True, quantize: bool=False) -> ResNet:
+    resnet50 = ResNet(
         block=BottleNeck, 
         layers=[3, 4, 6, 3], 
-        num_classes=num_classes,
+        num_classes=1000 if pretrained else num_classes,
         quantize=quantize,
     )
+
+    if pretrained:
+        pretrained_model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2) # pre-trained on ImageNet1K V2
+        resnet50.load_state_dict(pretrained_model.state_dict())
+        resnet50.fc = nn.Linear(resnet50.fc.in_features, num_classes, bias=True)
+    
+    return resnet50
