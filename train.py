@@ -402,7 +402,7 @@ def main(args):
         quantization=args.quantization,
     )
 
-    prj_name = args.name + '_quantization' if q else args.name
+    prj_name = args.name + '_qat' if q else args.name
     plot_loss_graphs(history, project_name=prj_name)
 
 
