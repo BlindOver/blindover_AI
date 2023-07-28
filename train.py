@@ -64,7 +64,8 @@ def train_on_batch(
         batch_acc += acc.item()
 
     return model, batch_loss/(batch+1), batch_acc/(batch+1)
-    
+
+
 @torch.no_grad()
 def valid_on_batch(
     model,
