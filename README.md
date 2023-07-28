@@ -70,7 +70,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
     ```
     # Convert file from float32 to uint8 with PTQ mode
 
-    python3 ./quantization/convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
+    python3 ./convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
     ```
 
 - To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
