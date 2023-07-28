@@ -55,12 +55,13 @@ def test(
 
             acc = (output_index == labels).sum() / len(outputs)
             batch_acc += acc.item()
-
+    
+    print(f'{"="*20} Inference Time: {time.time()-start:.3f}s {"="*20}')    
+    
     if project_name is not None:
         if plot_result:
             plot_results(image_list, label_list, output_list, project_name)
     
-    print(f'{"="*20} Inference Time: {time.time()-start:.3f}s {"="*20}')    
     print(f'{"="*20} Test Results: Accuracy {batch_acc/(batch+1)*100:.2f} {"="*20}')
 
 
@@ -110,7 +111,7 @@ def main(args):
     # setting device
     device = torch.device(args.device)
 
-    q = True if args.quantization is not 'none' else False
+    q = True if args.quantization != 'none' else False
 
     # load model
     if args.model_name == 'shufflenet':
