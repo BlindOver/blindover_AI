@@ -83,7 +83,7 @@ def valid_on_batch(
         outputs = model(images)
         loss = loss_func(outputs, labels)
         output_index = torch.argmax(outputs, dim=1)
-        acc = (output_index == labels).sum() / (len(outputs))
+        acc = (output_index == labels).sum() / len(outputs)
 
         if log_step > 0:
             if (batch + 1) / log_step == 0:
@@ -111,34 +111,42 @@ def training(
     early_stop: bool=False,
     project_name: str='experiment1',
     class_weight: Optional[torch.Tensor]=None,
-    train_log_step: int=300,
-    valid_log_step: int=50,
+    train_log_step: int=0,
+    valid_log_step: int=0,
     es_patience: int=30,
-    quantization: bool=False,
+    quantization: bool=False, # quantization aware training
 ):
     # settings for training
-    assert optimizer_name in ('momentum', 'adam'), \
+    assert optimizer_name in ('momentum', 'adam', 'adamw', 'nadam', 'radam'), \
         f'{optimizer_name} does not exists.'
 
+    # quantization
     if quantization:
-        from quantization.quantization import prepare_quantization, converting_quantization
-        project_name += '_quantization'
-        model = prepare_quantization(model)
+        from quantization.quantization import prepare_qat
+        from quantization.utils import fuse_modules
 
+        project_name += '_qat'
+        model = fuse_modules(model, mode='train')
+        model = prepare_qat(model)
+
+    # callbacks
     os.makedirs(f'./runs/train/{project_name}/weights', exist_ok=True)
     cp = CheckPoint(verbose=True)
 
     es_path = f'./runs/train/{project_name}/weights/es_weight.pt'
     es = EarlyStopping(verbose=True, patience=es_patience, path=es_path)
 
+    # device and model
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logger.info(f'device is {device}')
     
     model = model.to(device)
     logger.info('model loading ready.')
 
+    # loss function
     loss_func = nn.CrossEntropyLoss(weight=class_weight)
 
+    # optimizer
     if optimizer_name == 'momentum':
         optimizer = optim.SGD(
             model.parameters(),
@@ -146,19 +154,32 @@ def training(
             lr=lr,
             weight_decay=weight_decay,
         )
+
     else:
+        if optimizer_name == 'adam':
+            opt = optim.Adam
+        elif optimizer_name == 'adamw':
+            opt = optim.AdamW
+        elif optimizer_name == 'radam':
+            opt = optim.RAdam
+        else:
+            opt = optim.NAdam
+
         if type(momentum) is float:
             betas = (momentum, 0.999)
         else:
             betas = (0.9, 0.999)
-        optimizer = optim.Adam(
+
+        optimizer = opt(
             model.parameters(),
             lr=lr,
             weight_decay=weight_decay,
             betas=betas,
         )
+    
     logger.info(f'optimizer {optimizer} ready.')
     
+    # schedulers
     if lr_scheduler_name == 'poly':
         lr_scheduler = PolynomialLRDecay(
             optimizer=optimizer,
@@ -171,12 +192,14 @@ def training(
             warmup_epochs=int(epochs*0.1),
         )
 
+    # tensorboard
     writer = SummaryWriter(log_dir=f'./runs/train/{project_name}')
 
     loss_list, acc_list = [], []
     val_loss_list, val_acc_list = [], []
     start_training = time.time()    
     pbar = tqdm(range(epochs), total=int(epochs))
+
     for epoch in pbar:
         epoch_time = time.time()
 
@@ -262,7 +285,7 @@ def get_args_parser():
                         help='create a new folder')
     
     # model parameters
-    parser.add_argument('--model', type=str, default='mobilenet',
+    parser.add_argument('--model', type=str, default='shufflenet',
                         choices=['shufflenet', 'mobilenet', 'efficientnet', 'resnet18', 'resnet50'],
                         help='classification model name')
     parser.add_argument('--pretrained', action='store_true',
@@ -275,7 +298,7 @@ def get_args_parser():
     # hyperparameters for training
     parser.add_argument('--num_workers', default=8, type=int,
                         help='number of workers in cpu')
-    parser.add_argument('--batch_size', default=32, type=int,
+    parser.add_argument('--batch_size', default=8, type=int,
                         help='batch size for training model')
     parser.add_argument('--lr', default=1e-2, type=float,
                         help='learning rate')
@@ -347,12 +370,12 @@ def main(args):
 
     elif args.model == 'resnet18':
         from models.resnet import resnet18
-        model = resnet18(num_classes=args.num_classes, quantize=q)
+        model = resnet18(num_classes=args.num_classes, pre_trained=args.pretrained, quantize=q)
         logger.info('model : ResNet18!')
 
     elif args.model == 'resnet50':
         from models.resnet import resnet50
-        model = resnet50(num_classes=args.num_classes, quantize=q)
+        model = resnet50(num_classes=args.num_classes, pre_trained=args.pretrained, quantize=q)
         logger.info('model : ResNet50!')
 
     else:
