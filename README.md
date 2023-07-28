@@ -62,12 +62,21 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
   img = Image.open('./image.png')
   padded_img = Padding()(img)
   ```
+
 - To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet compare their accuracy and inference speed. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models))
+
 - **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md))
+
+    ```
+    # Convert file from float32 to uint8 with PTQ mode
+
+    python3 ./quantization/convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
+    ```
+
 - To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
   ```
-  python ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
+  python3 ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
   ```
 
 ### Dataset
