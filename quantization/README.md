@@ -14,6 +14,7 @@
 - Explanation step by step with simple example codes
 
 <details><summary> <b>First Method: PTQ (Post Training Quantization)</b> </summary>
+
 ```
 step 1. Load a model that include QuantStub() and DeQuantStub() from torch.quantization
 ```
@@ -214,6 +215,7 @@ def converting(model):
 quantized_model = converting(model)
 torch.save(quantized_model, './weights/quantized_weight.pt')
 ```
+</details>
 
 
 ### References
