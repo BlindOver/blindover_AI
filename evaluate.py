@@ -12,8 +12,12 @@ import torch.nn as nn
 
 from utils.dataset import load_dataloader
 from utils.plots import plot_results
-from quantization.quantization import converting_quantization, ptq_serving, qat_serving
-from quantization.utils import fuse_modules, print_size_of_model
+from quantization.quantization import (
+    converting_quantization, 
+    ptq_serving, qat_serving, 
+    fuse_modules, 
+    print_size_of_model,
+)
 
 
 def test(
