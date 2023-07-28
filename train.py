@@ -122,8 +122,7 @@ def training(
 
     # quantization
     if quantization:
-        from quantization.quantization import prepare_qat
-        from quantization.utils import fuse_modules
+        from quantization.quantization import prepare_qat, fuse_modules
 
         project_name += '_qat'
         model = fuse_modules(model, mode='train')
