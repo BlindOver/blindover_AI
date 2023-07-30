@@ -63,7 +63,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
   padded_img = Padding()(img)
   ```
 
-- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet, and compared the accuracy and inference speed between these models. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models)) The experiment results for this are pressented in [`Results`](https://github.com/BlindOver/blindover_AI/tree/main/quantization)
+- To maximize the performance of model on mobile devices or virtual server, we **trained various models** such as EfficientNetV2, MobileNetV3, ShuffleNetV2 and ResNet, and compared the accuracy and inference speed between these models. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models)) The experiment results for this are pressented in [`Results`](https://github.com/BlindOver/blindover_AI/tree/main/quantization)
 
 - **To accelerate inference speed**, we performed **quantization** (QAT and PTQ) and compared its performance of accuracy and inference speed with base model. Also, we provied the experimental results for quantization. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md)) 
 
