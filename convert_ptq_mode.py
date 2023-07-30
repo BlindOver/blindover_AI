@@ -41,7 +41,7 @@ def main(args):
         model = resnet18(num_classes=args.num_classes, pre_trained=False, quantize=True)
 
     elif name == 'resnet50':
-        model = resnet50(num_classes=args.num_clases, pre_trained=False, quantize=True)
+        model = resnet50(num_classes=args.num_classes, pre_trained=False, quantize=True)
     
     else:
         raise ValueError(f'{name} does not exists')
