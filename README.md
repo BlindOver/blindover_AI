@@ -3,9 +3,9 @@ Build Deep Learning Model for blind individuals
 - Models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
 - Number of Parameters (based on 33 classes):
 
-| ShuffleNetV2 (x0.5) | MobileNetV3 (small) | EfficientNetV2 |  ResNet18  |  ResNet50  |
-| :------------------: | :-----------------: | :------------: | :--------: | :--------: |
-|       375,617       |      1,551,681      |   20,219,761   | 11,193,441 | 23,575,649 |
+    | ShuffleNetV2 (x0.5)  | MobileNetV3 (small) | EfficientNetV2 |  ResNet18  |  ResNet50  |
+    | :------------------: | :-----------------: | :------------: | :--------: | :--------: |
+    |       375,617        |      1,551,681      |   20,219,761   | 11,193,441 | 23,575,649 |
 
 ### Training and Testing
 
@@ -73,11 +73,11 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
     python3 ./convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
     ```
 
-- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
+- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we apply image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
-  ```
-  python3 ./composite.py --foreground_path {'foreground images directory'} --background_path {'background images directory'} --save_dir {'save folder directory'}
-  ```
+    ```
+    python3 ./composite.py --foreground_path 'the/path/of/foregorund/images' --background_path 'the/path/of/background/images' --save_dir 'a/folder/to/save/generated/images'
+    ```
 
 ### Dataset
 
