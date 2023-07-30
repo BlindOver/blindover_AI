@@ -1,6 +1,6 @@
-Build Deep Learning Model for blind individuals
+Build Deep Learning Model to classify beverages for blind individuals
 
-- Models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
+- Experimented models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
 - Number of Parameters (based on 33 classes):
 
     | ShuffleNetV2 (x0.5)  | MobileNetV3 (small) | EfficientNetV2 |  ResNet18  |  ResNet50  |
@@ -123,11 +123,11 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
 |        2% (0)        |         박카스 (1)         | 칠성 사이다 (2) | 칠성 사이다 제로 (3) |   초코 우유 (4)   |  코카 콜라 (5)  |
 | :------------------: | :------------------------: | :-------------: | :------------------: | :----------------: | :--------------: |
-|  데미소다 사과 (6)  |    데미소다 복숭아 (7)    |   솔의눈 (8)   |   환타 오렌지 (9)   |   게토레이 (10)   |    제티 (11)    |
-|      맥콜 (12)      |         우유 (13)         |   밀키스 (14)   |   밀키스 제로 (15)   |   마운틴듀 (16)   |    펩시 (17)    |
-|    펩시 제로 (18)    |     포카리 스웨트 (19)     | 파워에이드 (20) |     레드불 (21)     |     식혜 (22)     | 스프라이트 (23) |
-| 스프라이트 제로 (24) |       딸기 우유 (25)       |  비타 500 (26)  | 브이톡 블루레몬 (27) | 브이톡 복숭아 (28) | 웰치스 포도 (29) |
-|  웰치스 오렌지 (30)  | 웰치스 화이트그레이프 (31) | 제로 콜라 (32) |          -          |         -         |        -        |
+|  데미소다 사과 (6)      |    데미소다 복숭아 (7)    |   솔의눈 (8)   |   환타 오렌지 (9)   |   게토레이 (10)   |    제티 (11)    |
+|      맥콜 (12)        |        우유 (13)         |   밀키스 (14)   |   밀키스 제로 (15)   |   마운틴듀 (16)   |    펩시 (17)    |
+|    펩시 제로 (18)      |     포카리 스웨트 (19)     | 파워에이드 (20) |     레드불 (21)     |     식혜 (22)     | 스프라이트 (23) |
+| 스프라이트 제로 (24)    |       딸기 우유 (25)       |  비타 500 (26)  | 브이톡 블루레몬 (27) | 브이톡 복숭아 (28) | 웰치스 포도 (29) |
+|  웰치스 오렌지 (30)     | 웰치스 화이트그레이프 (31) | 제로 콜라 (32) |          -          |         -         |        -        |
 
 **Directory Guide**
 
