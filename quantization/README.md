@@ -13,6 +13,7 @@
 
     - All experiments were conducted on a CPU I9-12900K
 
+
     |                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 | EfficientNetV2 | MobileNetV3 |
     | :------------------------------: | :-----------------: | :------: | :------: | :------------: | :---------: |
     | Inference speed of Float32 Model |          0          |    0     |    0     |       0        |      0      |
