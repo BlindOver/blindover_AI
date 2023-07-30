@@ -1,4 +1,4 @@
-Build Deep Learning Model to classify beverages for blind individuals
+## Build Deep Learning Model to classify beverages for blind individuals
 
 - Experimented models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
 - Number of Parameters (based on 33 classes):
@@ -7,7 +7,7 @@ Build Deep Learning Model to classify beverages for blind individuals
     | :------------------: | :-----------------: | :------------: | :--------: | :--------: |
     |       375,617        |      1,551,681      |   20,219,761   | 11,193,441 | 23,575,649 |
 
-### Training and Testing
+### Training and Test
 
 **Install virtual environment in Anaconda**
 
@@ -31,7 +31,7 @@ pip install -r requirements.txt
 python3 train.py --data_path 'the/directory/of/dataset' --name exp --model {the one of 5 models} --pretrained --img_size 224 --num_workers 8 --batch_size 4 --epochs 100 --optimizer adam --lr_scheduling --check_point
 ```
 
-**Testing**
+**Test**
 
 ```
 python3 evaluate.py --data_path 'the/directory/of/dataset' --model resnet18 --weight 'the/path/of/trained/weight/file' --img_size 224 --num_workers 8 --batch_size 32 --num_classes 33
@@ -63,9 +63,9 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
   padded_img = Padding()(img)
   ```
 
-- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet compare their accuracy and inference speed. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models))
+- To maximize performance of model on mobile devices, we **trained various models** such as Efficient, MobileNetV3, ShuffleNetV2 and ResNet, and compared the accuracy and inference speed between these models. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models)) The experiment results for this are pressented in [`Results`](https://github.com/BlindOver/blindover_AI/tree/main/quantization)
 
-- **To accelerate inference speed**, we trained a **quantized** model and compared its performance of accuracy and inference speed with base model. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md))
+- **To accelerate inference speed**, we performed **quantization** (QAT and PTQ) and compared its performance of accuracy and inference speed with base model. Also, we provied the experimental results for quantization. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md)) 
 
     ```
     # Convert file from float32 to uint8 with PTQ mode
@@ -73,7 +73,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
     python3 ./convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
     ```
 
-- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we apply image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
+- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we apply random image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
     ```
     python3 ./composite.py --foreground_path 'the/path/of/foregorund/images' --background_path 'the/path/of/background/images' --save_dir 'a/folder/to/save/generated/images'
