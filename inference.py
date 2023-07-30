@@ -8,10 +8,6 @@ import torch.nn.functional as F
 import torchvision.transforms as transforms
 
 from utils.dataset import Padding
-from models.efficientnet import EfficientNetV2
-from models.mobilenet import MobileNetV3
-from models.shufflenet import ShuffleNetV2
-from models.resnet import resnet18, resnet50
 from quantization.quantize import ptq_serving, qat_serving
 
 
