@@ -11,17 +11,17 @@
 
 - Comparison inference speed of models on our test set (seconds for 181 images):
 
-    - All experiments were conducted on a CPU I9-12900K
-
+    - All experiments were conducted on a I9-12900K CPU
+    - We did not quantize MobileNetV3 and EfficientNetV2
 
     |                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 | EfficientNetV2 | MobileNetV3 |
     | :------------------------------: | :-----------------: | :------: | :------: | :------------: | :---------: |
-    | Inference speed of Float32 Model |          0          |    0     |    0     |       0        |      0      |
-    |    Accuracy of Float32 Model     |          0          |    0     |    0     |       0        |      0      |
-    |      Inference speed of QAT      |          0          |    0     |    0     |       0        |      0      |
-    |         Accuracy of QAT          |          0          |    0     |    0     |       0        |      0      |
-    |      Inference speed of PTQ      |          0          |    0     |    0     |       0        |      0      |
-    |         Accuracy of PTQ          |          0          |    0     |    0     |       0        |      0      |
+    | Inference speed of Float32 Model |       4.431s        | 156.395s | 423.706s |    558.588s    |   5.127s    |
+    |    Accuracy of Float32 Model     |       69.19%        |  75.58%  |  66.86%  |     58.72%     |   86.63%    |
+    |      Inference speed of QAT      |       1.452s        |  1.670s  |  3.085s  |       -        |      -      |
+    |         Accuracy of QAT          |       86.05%        |  89.53%  |  64.53%  |       -        |      -      |
+    |      Inference speed of PTQ      |       1.354s        |  1.709s  |  4.395s  |       -        |      -      |
+    |         Accuracy of PTQ          |       62.79%        |  72.67%  |  63.37%  |       -        |      -      |
 
 
 ### Process Guide for Quantization
