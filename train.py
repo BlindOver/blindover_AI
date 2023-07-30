@@ -359,7 +359,7 @@ def main(args):
 
     elif args.model == 'shufflenet':
         from models.shufflenet import ShuffleNetV2
-        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained, quantization=q)
+        model = ShuffleNetV2(num_classes=args.num_classes, pre_trained=args.pretrained, quantize=q)
         logger.info('model : ShuffleNet!')
 
     elif args.model == 'efficientnet':
