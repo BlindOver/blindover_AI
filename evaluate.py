@@ -14,10 +14,25 @@ from utils.dataset import load_dataloader
 from utils.plots import plot_results
 from quantization.quantize import (
     converting_quantization, 
-    ptq_serving, qat_serving, 
+    ptq_serving, 
+    qat_serving, 
     fuse_modules, 
     print_size_of_model,
 )
+
+
+classes = {
+    0: '2%', 1: '박카스', 2: '칠성 사이다', 3: '칠성 사이다 제로', 4: '초코 우유',
+    5: '코카 콜라', 6: '데미소다 사과', 7: '데미소다 복숭아', 8: '솔의눈', 9: '환타 오렌지',
+    10: '게토레이', 11: '제티', 12: '맥콜', 13: '우유', 14: '밀키스', 15: '밀키스 제로',
+    16: '마운틴 듀', 17: '펩시', 18: '펩시 제로', 19: '포카리 스웨트', 20: '파워에이드',
+    21: '레드불', 22: '식혜', 23: '스프라이트', 24: '스프라이트 제로', 25: '딸기 우유',
+    26: '비타 500', 27: '브이톡 블루레몬', 28: '브이톡 복숭아', 29: '웰치스 포도',
+    30: '웰치스 오렌지', 31: '웰치스 화이트그레이프',32: '제로 콜라',
+}
+
+
+count_classes = {k: [0, 0] for k, v in classes.items()}
 
 
 def test(
@@ -50,6 +65,11 @@ def test(
             outputs = model(images)
             output_index = torch.argmax(outputs, dim=1)
 
+            # calculate the accuracy for each class
+            for idx, output in output_index:
+                count_classes[output.item()][0] += 1 # count predicted classes
+                count_classes[labels[idx].item()][1] += 1 # count label classes
+
             if plot_result:
                 output_list.append(output_index.cpu())
 
@@ -62,7 +82,10 @@ def test(
         if plot_result:
             plot_results(image_list, label_list, output_list, project_name)
     
-    print(f'{"="*20} Test Results: Accuracy {batch_acc/(batch+1)*100:.2f} {"="*20}')
+    print(f'{"="*20} Test Average Accuracy {batch_acc/(batch+1)*100:.2f} {"="*20}')
+    for k, v in count_classes.items():
+        print('{0: ^15s} --> accuracy: {1:.3f}%, {2}/{3}'.format(
+            classes[k], v[0]/(v[1]+1e-7), v[0], v[1]))
 
 
 def get_args_parser():
