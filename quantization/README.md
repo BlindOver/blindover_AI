@@ -1,25 +1,27 @@
 # Quantize the weights of model to achieve faster inference speed
 
 - Models: ShuffleNetV2, ResNet18 and ResNet50
-- Comparison size of models (KB):
+- Comparison size of models based on 33 classes (KB):
 
-|                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 |
-| :--------------: | :-----------------: | :------: | :------: |
-|   Normal Model   |       1629.99       | 44843.61 | 94597.31 |
-| Quantized Model  |       684.15        | 11402.92 | 24540.52 |
-|      factor      |        2.38         |   3.93   |   3.85   |
+    |                 | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 |
+    | :-------------: | :-----------------: | :------: | :------: |
+    |  Normal Model   |       1629.99       | 44843.61 | 94597.31 |
+    | Quantized Model |       684.15        | 11402.92 | 24540.52 |
+    |     factor      |        2.38         |   3.93   |   3.85   |
 
-- Comparison inference speed (seconds) for 147 images:
-    - All experiments are performed on a CPU I9-12900K
+- Comparison inference speed of models on our test set (seconds for 181 images):
 
-|                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 |
-| :-----------------------------:  | :-----------------: | :------: | :------: |
-| Inference speed of Float32 Model |      0              |  48.854s |    0     |
-| Accuracy of Float32 Model        |      0              |  97.28%  |    0     |
-| Inference speed of QAT           |      0              |  3.516s  |    0     |
-| Accuracy of QAT                  |      0              |  98.64%  |    0     |
-| Inference speed of PTQ           |      0              |  2.993s  |    0     |
-| Accuracy of PTQ                  |      0              |  97.96%  |    0     |
+    - All experiments were conducted on a CPU I9-12900K
+
+    |                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 | EfficientNetV2 | MobileNetV3 |
+    | :------------------------------: | :-----------------: | :------: | :------: | :------------: | :---------: |
+    | Inference speed of Float32 Model |          0          |    0     |    0     |       0        |      0      |
+    |    Accuracy of Float32 Model     |          0          |    0     |    0     |       0        |      0      |
+    |      Inference speed of QAT      |          0          |    0     |    0     |       0        |      0      |
+    |         Accuracy of QAT          |          0          |    0     |    0     |       0        |      0      |
+    |      Inference speed of PTQ      |          0          |    0     |    0     |       0        |      0      |
+    |         Accuracy of PTQ          |          0          |    0     |    0     |       0        |      0      |
+
 
 ### Process Guide for Quantization
 
