@@ -1,6 +1,6 @@
 ## Build Deep Learning Model to classify beverages for blind individuals
 
-- Experimented models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
+- Models: [`ShuffleNetV2`](https://arxiv.org/abs/1807.11164), [`MobileNetV3`](https://arxiv.org/abs/1905.02244), [`EfficientNetV2`](https://arxiv.org/abs/2104.00298), [`ResNet`](https://arxiv.org/abs/1512.03385)
 - Number of Parameters (based on 33 classes):
 
     | ShuffleNetV2 (x0.5)  | MobileNetV3 (small) | EfficientNetV2 |  ResNet18  |  ResNet50  |
@@ -53,7 +53,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
 **Features**
 
-- To avoid image distortion, we apply **padding** and resize processing. ([`code`](https://github.com/BlindOver/blindover_AI/blob/d414b5aad9844feda26e95afc6f0b44c5247378f/utils/dataset.py#L32))
+- To avoid image distortion, we applied **padding** and resize processing. ([`code`](https://github.com/BlindOver/blindover_AI/blob/d414b5aad9844feda26e95afc6f0b44c5247378f/utils/dataset.py#L32))
 
   ```python
   from utils.dataset import Padding
@@ -63,7 +63,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
   padded_img = Padding()(img)
   ```
 
-- To maximize the performance of model on mobile devices or virtual server, we **trained various models** such as EfficientNetV2, MobileNetV3, ShuffleNetV2 and ResNet, and compared the accuracy and inference speed between these models. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models)) The experiment results for this are pressented in [`Results`](https://github.com/BlindOver/blindover_AI/tree/main/quantization)
+- To maximize the performance of model on mobile device or virtual server, we **trained various models** such as EfficientNetV2, MobileNetV3, ShuffleNetV2 and ResNet, and compared the accuracy and inference speed between these models. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models)) The experimental results for this are pressented in [`Results`](https://github.com/BlindOver/blindover_AI/tree/main/quantization)
 
 - **To accelerate inference speed**, we performed **quantization** (QAT and PTQ) and compared its performance of accuracy and inference speed with base model. Also, we provied the experimental results for quantization. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md)) 
 
@@ -73,7 +73,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
     python3 ./convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
     ```
 
-- To address the issue of insufficient data, we utilize **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we apply random image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
+- To address the issue of insufficient data, we utilized **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we applied random image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
     ```
     python3 ./composite.py --foreground_path 'the/path/of/foregorund/images' --background_path 'the/path/of/background/images' --save_dir 'a/folder/to/save/generated/images'
