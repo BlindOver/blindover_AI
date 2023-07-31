@@ -65,11 +65,11 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
     - Correct and Incorrect examples
     
-    <div align='center'>
-        <a href='./'>
-            <img src = './images/padded.png' width=600>
-        </a>
-    </div>
+        <div align='center'>
+            <a href='./'>
+                <img src = './images/padded.png' width=600>
+            </a>
+        </div>
 
 - To maximize the performance of model on mobile device or virtual server, we **trained various models** such as EfficientNetV2, MobileNetV3, ShuffleNetV2 and ResNet, and compared the accuracy and inference speed between these models. ([`code`](https://github.com/BlindOver/blindover_AI/tree/main/models)) The experimental results for this are pressented in [`Results`](https://github.com/BlindOver/blindover_AI/tree/main/quantization)
 
@@ -83,19 +83,22 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
 - To address the issue of insufficient data, we utilized **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we applied random image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
-    - Examples of composite image
-
-    <div align='center'>
-        <a href='./'>
-            <img src = './images/composite_pipeline.png' width=600>
-        </a>
-    </div>
-
     ```
     python3 ./composite.py --foreground_path 'the/path/of/foregorund/images' --background_path 'the/path/of/background/images' --save_dir 'a/folder/to/save/generated/images'
     ```
 
+        
+    - Examples of composite image
+
+        <div align='center'>
+            <a href='./'>
+                <img src = './images/composite_pipeline.png' width=600>
+            </a>
+        </div>
+
 ### Dataset
+
+- We collected 10 to 15 images per class and then augmented the training data through image composite.
 
 **Sample Images**
 
@@ -103,13 +106,13 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
 <div align='center'>
     <a href='./'>
-        <img src = './images/cola_front.JPG' width=200>
+        <img src = './images/cola_front.JPG' width=180>
     </a>
     <a href='./'>
-        <img src = './images/cola_back.JPG' width=200>
+        <img src = './images/cola_back.JPG' width=180>
     </a>
     <a href='./'>
-        <img src = './images/cola_big.JPG' width=200>
+        <img src = './images/cola_big.JPG' width=180>
     </a>
 </div>
 
@@ -117,13 +120,13 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
 <div align='center'>
     <a href='./'>
-        <img src = './images/sprite_zero_front.JPG' width=200>
+        <img src = './images/sprite_zero_front.JPG' width=180>
     </a>
     <a href='./'>
-        <img src = './images/sprite_zero_back.JPG' width=200>
+        <img src = './images/sprite_zero_back.JPG' width=180>
     </a>
     <a href='./'>
-        <img src = './images/sprite_zero.JPG' width=200>
+        <img src = './images/sprite_zero.JPG' width=180>
     </a>
 </div>
 
