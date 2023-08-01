@@ -26,16 +26,17 @@
 
     - The experiments were conducted on a **virtual server**
 
-    <details><summary> <b> The specifications of our virtual server </b> </summary>
 
-    - Inter(R) Xeon(R) CPU @ 2.20GHz
-    - Thread(s) per core: 2
-    - Core(s) per socket: 1
-    - Socket(s) : 1
-    - Stepping: 0
-    - BogoMIPS: 4399.99
+        <details><summary> <b> The specifications of our virtual server </b> </summary>
     
-    </details>
+        - Inter(R) Xeon(R) CPU @ 2.20GHz
+        - Thread(s) per core: 2
+        - Core(s) per socket: 1
+        - Socket(s) : 1
+        - Stepping: 0
+        - BogoMIPS: 4399.99
+    
+        </details>
 
 
     |                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 | EfficientNetV2 | MobileNetV3 |
