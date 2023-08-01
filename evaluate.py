@@ -66,10 +66,11 @@ def test(
             output_index = torch.argmax(outputs, dim=1)
 
             # calculate the accuracy for each class
-            for idx, output in output_index:
-                count_classes[output.item()][0] += 1 # count predicted classes
+            for idx, output in enumerate(output_index):
                 count_classes[labels[idx].item()][1] += 1 # count label classes
-
+                if labels[idx] == output:
+                    count_classes[output.item()][0] += 1 # count predicted classes
+                
             if plot_result:
                 output_list.append(output_index.cpu())
 
@@ -85,7 +86,7 @@ def test(
     print(f'{"="*20} Test Average Accuracy {batch_acc/(batch+1)*100:.2f} {"="*20}')
     for k, v in count_classes.items():
         print('{0: ^15s} --> accuracy: {1:.3f}%, {2}/{3}'.format(
-            classes[k], v[0]/(v[1]+1e-7), v[0], v[1]))
+            classes[k], (v[1]+1e-7)/v[0], v[1], v[0]))
 
 
 def get_args_parser():
@@ -168,7 +169,7 @@ def main(args):
         model = qat_serving(model=model, weight=args.weight)
 
     else: # 'none'
-        model.load_state_dict(torch.load(args.weight))
+        model.load_state_dict(torch.load(args.weight, map_location='cpu'))
 
     test(
         test_loader,
