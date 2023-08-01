@@ -75,11 +75,23 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 
 - **To accelerate inference speed**, we performed **quantization** (QAT and PTQ) and compared its performance of accuracy and inference speed with base model. Also, we provied the experimental results for quantization. ([`README`](https://github.com/BlindOver/blindover_AI/blob/main/quantization/README.md)) 
 
+    - Comparison between QAT and PTQ ([`source of figure`](https://arxiv.org/abs/2103.13630))
+    
+    
+        <div align='center'>
+            <a href='./'>
+                <img src = './images/comparison_ptq_and_qat.png' width=600>
+            </a>
+        </div>
+
+
     ```
     # Convert file from float32 to uint8 with PTQ mode
 
     python3 ./convert_ptq_mode.py --data_path 'the/path/of/dataset' --model_name 'model name' --weight 'path/of/trained/weight/file'
     ```
+
+    
 
 - To address the issue of insufficient data, we utilized **image generation models** such as [Diffusion](https://stablediffusionweb.com/) and [DALL-E](https://openai.com/dall-e-2) to increase the number of samples. Also, we applied random image transformation such as colorization, sharpness, contrast and brightness to make slight changes to the image instead of original image. ([`code`](https://github.com/BlindOver/blindover_AI/blob/main/composite.py))
 
