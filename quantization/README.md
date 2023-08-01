@@ -187,7 +187,7 @@ model = Model()
 ```
 
 ```
-step 2. Setting training model for model and assigning to cpu device
+step 2. Setting training mode for model and assigning to cpu device
 ```
 
 ```python
