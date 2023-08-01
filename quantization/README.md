@@ -32,6 +32,8 @@
     - Socket(s) : 1
     - Stepping: 0
     - BogoMIPS: 4399.99
+    <details>
+    
 
     |                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 | EfficientNetV2 | MobileNetV3 |
     | :------------------------------: | :-----------------: | :------: | :------: | :------------: | :---------: |
