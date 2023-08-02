@@ -41,12 +41,12 @@
 
     |                                  | ShuffleNetV2 (x0.5) | ResNet18 | ResNet50 | EfficientNetV2 | MobileNetV3 |
     | :------------------------------: | :-----------------: | :------: | :------: | :------------: | :---------: |
-    | Inference speed of Float32 Model |       206.832s      |2864.013s |      -   |           -    |  -          |
-    |    Accuracy of Float32 Model     |        93.42%       |  93.42%  |      -   |           -    |  -          |
-    |      Inference speed of QAT      |       154.552s      |    -     |     -    |      -         |  -          |
-    |         Accuracy of QAT          |        94.08%       |    -     |     -    |      -         |  -          |
-    |      Inference speed of PTQ      |       152.067s      |    -     |     -    |      -         |  -          |
-    |         Accuracy of PTQ          |        92.11%       |    -     |     -    |      -         |  -          |
+    | Inference speed of Float32 Model |       206.832s      |2864.013s |8032.249s |      -         |     -       |
+    |    Accuracy of Float32 Model     |        93.42%       |  93.42%  |  94.08%  |      -         |     -       |
+    |      Inference speed of QAT      |       154.552s      |245.029s  | 351.875s |      -         |     -       |
+    |         Accuracy of QAT          |        94.08%       | 96.71%   |  98.03%  |      -         |     -       |
+    |      Inference speed of PTQ      |       152.067s      |239.481s  | 352.040s |      -         |     -       |
+    |         Accuracy of PTQ          |        92.11%       | 93.42%   |  93.42%  |      -         |     -       |
 
 
 ### Process Guide for Quantization
