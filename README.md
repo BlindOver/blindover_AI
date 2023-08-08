@@ -153,7 +153,7 @@ python3 inference.py --src 'the/directory/of/image' --model_name resnet18 --weig
 | 스프라이트 제로 (24)    |       딸기 우유 (25)       |  비타 500 (26)  | 브이톡 블루레몬 (27) | 브이톡 복숭아 (28) | 웰치스 포도 (29) |
 |  웰치스 오렌지 (30)     | 웰치스 화이트그레이프 (31) | 제로 콜라 (32) |          -          |         -         |        -        |
 
-**Directory Guide**
+**Dataset Structure**
 
 ```
 path : dataset/
